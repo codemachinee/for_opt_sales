@@ -1,0 +1,16 @@
+.venv
+loggs*
+errors*
+../configs/passwords.py
+pidor-of-the-day-5880592e7067.json
+clients.json
+Рассчет экономики.xlsx
+loggs.log
+errors.log
+tables/
+configs/
+__pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.idea/
