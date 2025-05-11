@@ -6,6 +6,14 @@ requires-python = ">=3.11"
 dependencies = [
     "aiogram>=3.20.0.post0",
     "apscheduler>=3.11.0",
+    "asyncio>=3.4.3",
+    "gspread>=6.2.0",
     "loguru>=0.7.3",
     "pytz>=2025.2",
+    "redis>=6.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
 ]
