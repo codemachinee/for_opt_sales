@@ -21,7 +21,11 @@ class Rassylka(StatesGroup):
 
 
 class Next_level_base(StatesGroup):
-    nickname = State()
+    kategoriya = State()
+    brand = State()
+    model = State()
+    quantity = State()
+
 
 
 async def anoter_model_registration(message, state: FSMContext, bot):

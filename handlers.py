@@ -15,7 +15,7 @@ from aiogram.types import (
 )
 from loguru import logger
 
-from FSM import Get_admin, Rassylka, Message_from_admin
+from FSM import Get_admin, Rassylka, Message_from_admin, Next_level_base
 from configs.passwords import admins_list, group_id
 from functions import antispam
 from structure import structure_menu
@@ -207,6 +207,24 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
         elif callback.data == "Основное меню":
             await Buttons(bot, callback.message, structure_menu["Основное меню"], menu_level= "Пожалуйста выберите интересующий пункт меню:").menu_buttons()
 
+        elif callback.data == "📦 Закупка оптом":
+            await Buttons(bot, callback.message, structure_menu["Основное меню"]["📦 Закупка оптом"],
+                          back_button="Основное меню",
+                          menu_level= "Пожалуйста выберите категорию товаров:").menu_buttons()
+            await state.set_state(Next_level_base.kategoriya)
+
+        elif callback.data in structure_menu["Основное меню"]["📦 Закупка оптом"]:
+            await Buttons(bot, callback.message, structure_menu["Основное меню"]["📦 Закупка оптом"][f'{callback.data}'],
+                          back_button="📦 Закупка оптом", kategoriya= f'{callback.data}__',
+                          menu_level= "Пожалуйста выберите бренд:").menu_buttons()
+            await state.set_state(Next_level_base.brand)
+
+        elif '__' in callback.data:
+            split_list = callback.data.split('__')
+            await Buttons(bot, callback.message,
+                          structure_menu["Основное меню"]["📦 Закупка оптом"][f'{split_list[0]}'][f'{split_list[1]}'],
+                          back_button=f'{split_list[0]}',
+                          menu_level="Пожалуйста выберите модель/серию:").menu_buttons()
         # elif callback.data == 'page_two':
         #     await Buttons(bot, callback.message).marka_buttons(next_button=None, back_button='page_one')
         # elif callback.data == 'zayavka_yes':

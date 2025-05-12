@@ -50,26 +50,27 @@ kb_slots_menu = InlineKeyboardMarkup(inline_keyboard=[
 
 class Buttons:  # класс для создания клавиатур различных категорий товаров
 
-    def __init__(self, bot, message, keys_dict, back_button=None, menu_level='Пожалуйста выберите:'):
+    def __init__(self, bot, message, keys_dict, back_button=None, kategoriya='', menu_level='Пожалуйста выберите:'):
         self.bot = bot
         self.message = message
         self.back_button = back_button
         self.menu_level = menu_level
         self.keys_dict = keys_dict
+        self.kategoriya = kategoriya
 
     async def menu_buttons(self):
         keys = {}
         keyboard_list = []
-        keys_list = list(self.keys_dict.keys())
+        keys_list = list(self.keys_dict)
         for i in keys_list:
             index = keys_list.index(i)
-            button = types.InlineKeyboardButton(text=i, callback_data=i)
+            button = types.InlineKeyboardButton(text=i, callback_data=f'{self.kategoriya+i}')
             keys[f'but{index}'] = button
 
             # Группируем кнопки попарно
             if index > 0 and index % 2 != 0:
                 previous_button = keys[f'but{index - 1}']
-                if len(i[1]) <= 16 and len(keys_list[index - 1][1]) <= 16 and structure_menu["Основное меню"] != self.keys_dict:
+                if len(i) <= 16 and len(keys_list[index - 1]) <= 16 and structure_menu["Основное меню"] != self.keys_dict:
                     keyboard_list.append([previous_button, button])
                 else:
                     keyboard_list.append([previous_button])
