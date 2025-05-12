@@ -3,6 +3,7 @@ import asyncio
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+from configs.passwords import group_id
 from structure import structure_menu
 
 kb1 = InlineKeyboardMarkup(inline_keyboard=[
@@ -110,6 +111,13 @@ class Buttons:  # класс для создания клавиатур разл
         await asyncio.sleep(0.3)
         await self.bot.send_message(self.message.chat.id, 'Пожалуйста выберите интересующий пункт меню:',
                                    message_thread_id=self.message.message_thread_id, reply_markup=kb2)
+
+    async def rasylka_buttons(self):
+        kb_rasylka = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text='💿 Общая база клиентов', callback_data='Общая база клиентов')],
+            [InlineKeyboardButton(text='❌ Отмена', callback_data="Основное меню")]])
+        await self.bot.send_message(text='Выберите базу для отправки рассылки:', chat_id=self.message.chat.id,
+                                         reply_markup=kb_rasylka)
 
     # async def setings_buttons(self):
     #     keys = {}

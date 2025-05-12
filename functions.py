@@ -6,7 +6,7 @@ from aiogram.types import Message
 from loguru import logger
 
 from configs.passwords import loggs_acc
-from google_sheets import Sheet_base
+from google_sheets import Sheet_base, moscow_tz
 from redis_file import redis_storage
 
 
@@ -20,6 +20,12 @@ class Clients:
                                           "reasons": data["reasons"], "date": data["date"]}
         except Exception as e:
             logger.exception('Исключение вызванное functions/set_clients', e)
+
+    async def update_clients(self, id: str, key: str, value: str):
+        try:
+            self.dict[id][key] = value
+        except Exception as e:
+            logger.exception('Исключение вызванное functions/update_clients', e)
 
     async def get_clients(self) -> dict:
         return self.dict
@@ -41,10 +47,10 @@ clients_base = Clients()
 async def antispam(bot, message: Message) -> Any:
     try:
         if await redis_storage.exists(str(message.chat.id)) is True:
-            if await redis_storage.get(str(message.chat.id)) <= 10:
+            if int(await redis_storage.get(str(message.chat.id))) <= 18:
                 await redis_storage.incr(str(message.chat.id))
                 return True
-            elif 10 < await redis_storage.get(str(message.chat.id)) <= 13:
+            elif 18 < int(await redis_storage.get(str(message.chat.id))) <= 21:
                 await redis_storage.incr(str(message.chat.id))
                 return "Предупреждение"
             else:
@@ -52,9 +58,11 @@ async def antispam(bot, message: Message) -> Any:
                 return False
         else:
             await redis_storage.set(str(message.chat.id), 0, expire=1200)
-            if message.chat.id not in await clients_base.get_clients():
+            clients_list = await clients_base.get_clients()
+            if str(message.chat.id) not in clients_list:
                 await Sheet_base(bot, message).chec_and_record_in_client_base()
-
+            else:
+                await clients_base.update_clients(str(message.chat.id), "date", str(datetime.now(moscow_tz).strftime('%d.%m.%y %H:%M')))
             return True
     except Exception as e:
         logger.exception('Исключение вызванное functions/antispam', e)

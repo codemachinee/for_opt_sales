@@ -12,25 +12,27 @@ from redis_file import redis_storage
 
 import redis
 
-# from FSM import (
-#     Another_model,
-#     Message_from_admin,
-#     Next_level_base,
-#     Rassylka,
-#     anoter_model_registration,
-#     message_from_admin_chat,
-#     message_from_admin_text,
-#     message_from_user,
-#     next_level,
-#     rassylka,
-# )
+from FSM import (
+    Get_admin,
+    Message_from_admin,
+    Next_level_base,
+    Rassylka,
+    anoter_model_registration,
+    message_from_admin_chat,
+    message_from_admin_text,
+    message_from_user,
+    # next_level,
+    rassylka,
+)
 
 from configs import passwords
 from handlers import (
     # check_callbacks,
-    # day_visitors,
+    day_visitors,
     help,
+    post,
     reset_cash,
+    sent_message,
     # reset_cash,
     # sent_message,
     start,
@@ -61,19 +63,19 @@ dp = Dispatcher()
 dp.message.register(start, Command(commands='start'))
 dp.message.register(help, Command(commands='help'))
 dp.message.register(menu, Command(commands='menu'))
-# dp.message.register(post, Command(commands='post'))
-# dp.message.register(sent_message, Command(commands='sent_message'))
-# dp.message.register(day_visitors, Command(commands='day_visitors'))
+dp.message.register(post, Command(commands='post'))
+dp.message.register(sent_message, Command(commands='sent_message'))
+dp.message.register(day_visitors, Command(commands='day_visitors'))
 dp.message.register(reset_cash, Command(commands='reset_cash'))
 
 # dp.message.register(anoter_model_registration, Another_model.model)
 #
-# dp.message.register(message_from_user, Another_model.message)
+dp.message.register(message_from_user, Get_admin.message)
 #
-# dp.message.register(rassylka, Rassylka.post)
+dp.message.register(rassylka, Rassylka.post)
 #
-# dp.message.register(message_from_admin_chat, Message_from_admin.user_id)
-# dp.message.register(message_from_admin_text, Message_from_admin.message)
+dp.message.register(message_from_admin_chat, Message_from_admin.user_id)
+dp.message.register(message_from_admin_text, Message_from_admin.message)
 #
 # dp.callback_query.register(check_callbacks, Another_model.marka)
 # dp.callback_query.register(check_callbacks, Another_model.model)

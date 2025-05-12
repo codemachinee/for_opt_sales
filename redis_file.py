@@ -12,7 +12,7 @@ class RedisStorage:
         await self.redis.set(name=key, value=value, ex=expire)
 
     async def get(self, key: str) -> Optional[int]:
-        return int(await self.redis.get(name=key))
+        return await self.redis.get(name=key)
 
     # возвращает True или False
     async def exists(self, key: str) -> bool:
@@ -46,3 +46,6 @@ class RedisStorage:
 
 
 redis_storage = RedisStorage()
+
+
+# print(asyncio.run(redis_storage.get('1234')))

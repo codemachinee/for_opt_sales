@@ -251,7 +251,3 @@ structure_menu = {
     }
 
     }
-
-# for i in structure_menu['Основное меню'].keys():
-#     index = list(structure_menu['Основное меню'].keys()).index(i)
-#     print(i)

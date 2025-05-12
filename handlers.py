@@ -15,12 +15,13 @@ from aiogram.types import (
 )
 from loguru import logger
 
+from FSM import Get_admin, Rassylka, Message_from_admin
 from configs.passwords import admins_list, group_id
 from functions import antispam
 from structure import structure_menu
 
 # from FSM import Another_model, Message_from_admin, Next_level_base, Rassylka
-from functions import clients_base
+from functions import clients_base, is_today
 
 from keyboards import Buttons, kb_main_menu
 from configs.passwords import loggs_acc
@@ -96,45 +97,70 @@ async def reset_cash(message: Message, bot, state: FSMContext):
     except Exception as e:
         logger.exception('Ошибка в handlers/sent_message', e)
         await bot.send_message(loggs_acc, f'Ошибка в handlers/sent_message: {e}')
-#
-#
-# async def post(message: Message, bot, state: FSMContext):
-#     await state.clear()
-#     try:
-#         if message.chat.id == admin_account.admin:
-#             await Buttons(bot, message).rasylka_buttons()
-#             await state.set_state(Rassylka.post)
-#
-#         else:
-#             await bot.send_message(message.chat.id, 'У Вас нет прав для использования данной команды')
-#     except Exception as e:
-#         logger.exception('Ошибка в handlers/post', e)
-#         await bot.send_message(loggs_acc, f'Ошибка в handlers/post {e}')
-#
-#
-# async def day_visitors(message: Message, bot, state: FSMContext):
-#     await state.clear()
-#     try:
-#         if message.chat.id == admin_account.admin:
-#             data = await db.return_base_data()
-#             if data is False:
-#                 await bot.send_message(message.chat.id, 'Сегодня пользователей не было')
-#             else:
-#                 table_header = f"Пользователи воспользовавшиеся ботом сегодня {len(data)}:\n\n"
-#                 table_body = " *Telegram ID* | *Ссылка* | *Имя* | *Время* | *Ход*\n"
-#                 table_body += "-" * 44 + "\n"
-#                 for i in data:
-#                     table_body += f"{i[0]} | @{i[1]} | {i[2]} | {i[3][11:16]} | {i[4]}\n" + ("-" * 44 + "\n")
-#
-#                 await bot.send_message(message.chat.id, table_header + table_body, parse_mode="Markdown")
-#         else:
-#             await bot.send_message(message.chat.id, 'Недостаточно прав',
-#                                    message_thread_id=message.message_thread_id)
-#     except Exception as e:
-#         logger.exception('Ошибка в handlers/day_visitors', e)
-#         await bot.send_message(loggs_acc, f'Ошибка в handlers/day_visitors: {e}')
-#
-#
+
+
+async def post(message: Message, bot, state: FSMContext):
+    await state.clear()
+    try:
+        if message.chat.id in admins_list:
+            await Buttons(bot, message, {}).rasylka_buttons()
+            await state.set_state(Rassylka.post)
+
+        else:
+            await bot.send_message(message.chat.id, 'У Вас нет прав для использования данной команды')
+    except Exception as e:
+        logger.exception('Ошибка в handlers/post', e)
+        await bot.send_message(loggs_acc, f'Ошибка в handlers/post {e}')
+
+
+async def sent_message(message: Message, bot, state: FSMContext):
+    try:
+        await state.clear()
+        if message.chat.id in admins_list:
+            await bot.send_message(message.chat.id, 'Введи id чата клиента, которому нужно написать от лица бота')
+            await state.set_state(Message_from_admin.user_id)
+        else:
+            await bot.send_message(message.chat.id, 'У Вас нет прав для использования данной команды')
+    except Exception as e:
+        logger.exception('Ошибка в handlers/sent_message', e)
+        await bot.send_message(loggs_acc, f'Ошибка в handlers/sent_message: {e}')
+
+
+async def day_visitors(message: Message, bot, state: FSMContext):
+    await state.clear()
+    today_list = []
+    mess = await bot.send_message(message.chat.id, 'загрузка..🚀')
+    try:
+        if message.chat.id in admins_list:
+            data = await clients_base.get_clients()
+            for d in data:
+                if  await is_today(data[d]["date"]) is True:
+                    step = await redis_storage.get(d)
+                    if step is None:
+                        step = 0
+                    today_list.append([d, data[d]["username"], data[d]["name"], data[d]["date"], step])
+                else:
+                    pass
+
+            if len(today_list) == 0:
+                await bot.edit_message_text(chat_id=message.chat.id, text='Сегодня пользователей не было', message_id=mess.message_id)
+            else:
+                table_header = f"Пользователи воспользовавшиеся ботом сегодня {len(today_list)}:\n\n"
+                table_body = " *Telegram ID* | *Ссылка* | *Имя* | *Время* | *Ход*\n"
+                table_body += "-" * 44 + "\n"
+                for i in today_list:
+                    table_body += f"{i[0]} | @{i[1]} | {i[2]} | {i[3][9:]} | {i[4]}\n" + ("-" * 44 + "\n")
+
+                await bot.edit_message_text(chat_id=message.chat.id, text=table_header+table_body,
+                                            message_id=mess.message_id, parse_mode="Markdown")
+        else:
+            await bot.send_message(message.chat.id, 'Недостаточно прав',
+                                   message_thread_id=message.message_thread_id)
+    except Exception as e:
+        logger.exception('Ошибка в handlers/day_visitors', e)
+        await bot.send_message(loggs_acc, f'Ошибка в handlers/day_visitors: {e}')
+
+
 async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
     assert callback.message is not None   # обозначаем для проверочной библиотеки mypy, чтобы избегать лишних ошибок при тесте
     assert callback.data is not None
@@ -173,7 +199,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                             f'id чата: {callback.message.chat.id}\n'
                                             f'Если ссылка на чат отсутствует запроси контакт или отправь свой с помощью команды:\n'
                                             f'/sent_message - отправить сообщение с помощью бота')
-            # await state.set_state(Another_model.message)
+            await state.set_state(Get_admin.message)
 
         elif callback.data == "ℹ️ О нас":
             await Buttons(bot, callback.message, {},"Основное меню", "⚙️ Фрагмент в разработке").menu_buttons()
@@ -277,11 +303,11 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
         #         await clients_base(bot, callback.message, auto_model=f'{data_marka} {callback.data[0]} класса').chec_and_record()
         #     else:
         #         return
-        # elif callback.data == 'Общая база клиентов':
-        #     await bot.edit_message_text(text='База для рассылки: Общая база клиентов\nОтправь мне пост 💬',
-        #                                 chat_id=admin_account.admin, message_id=callback.message.message_id)
-        #     await state.update_data(base=callback.data)
-        #     await state.set_state(Rassylka.post)
+        elif callback.data == 'Общая база клиентов':
+            await bot.edit_message_text(text='База для рассылки: Общая база клиентов\nОтправь мне пост 💬',
+                                        chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+            await state.update_data(base=callback.data)
+            await state.set_state(Rassylka.post)
         # elif callback.data == 'База потенциальных клиентов':
         #     await bot.edit_message_text(text='База для рассылки: ️База потенциальных клиентов\nОтправь мне пост 💬',
         #                                 chat_id=admin_account.admin, message_id=callback.message.message_id)

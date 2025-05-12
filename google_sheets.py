@@ -50,15 +50,17 @@ class Sheet_base:  # класс базы данных
             await self.bot.send_message(loggs_acc, f'Исключение вызванное google_sheet/chec_and_record_in_client_base: {e}')
 
     async def rasylka_v_bazu(self):  # функция рассылки постов в базы
+        mess = await self.bot.send_message(self.message.chat.id, 'загрузка..🚀')
         telegram_ids_values_list = self.worksheet_client_base.col_values(1)
         telegram_names_values_list = self.worksheet_client_base.col_values(2)
         for i in range(1, len(telegram_ids_values_list)):
             try:
-                await self.bot.copy_message(telegram_ids_values_list[i], admin_account, self.message.message_id)
+                await self.bot.copy_message(telegram_ids_values_list[i], self.message.chat.id, self.message.message_id)
                     #self.bot.send_message(self.worksheet.col_values(1)[i], 'Участвовать в акции?', reply_markup=kb6)
             except Exception as e:
                 logger.exception('Рассылка в базу данных', f'Босс, с @{telegram_names_values_list[i]} проблема{e}')
                 await self.bot.send_message(loggs_acc, f'Босс, с @{telegram_names_values_list[i]} проблема{e}')
+        await self.bot.delete_message(self.message.chat.id, mess.message_id)
         await self.bot.send_message(self.message.chat.id, 'Босс, рассылка в базу клиентов выполнена ✅')
 
     async def get_clients(self):
