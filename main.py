@@ -17,12 +17,10 @@ from FSM import (
     Message_from_admin,
     Next_level_base,
     Rassylka,
-    anoter_model_registration,
     message_from_admin_chat,
     message_from_admin_text,
     message_from_user,
-    # next_level,
-    rassylka,
+    rassylka, save_all_user_information
 )
 
 from configs import passwords
@@ -33,8 +31,6 @@ from handlers import (
     post,
     reset_cash,
     sent_message,
-    # reset_cash,
-    # sent_message,
     start,
     menu, check_callbacks
 )
@@ -76,14 +72,13 @@ dp.message.register(rassylka, Rassylka.post)
 #
 dp.message.register(message_from_admin_chat, Message_from_admin.user_id)
 dp.message.register(message_from_admin_text, Message_from_admin.message)
-#
-# dp.callback_query.register(check_callbacks, Another_model.marka)
-# dp.callback_query.register(check_callbacks, Another_model.model)
-# dp.callback_query.register(check_callbacks, Rassylka.post)
-#
+
 dp.callback_query.register(check_callbacks, F.data)
 #
-# dp.message.register(next_level, Next_level_base.nickname)
+dp.message.register(check_callbacks, Next_level_base.kategoriya)
+dp.message.register(check_callbacks, Next_level_base.brand)
+dp.message.register(check_callbacks, Next_level_base.model)
+dp.message.register(save_all_user_information, Next_level_base.quantity)
 
 # dp.message.register(check_message, F.text)
 

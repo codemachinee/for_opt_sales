@@ -15,7 +15,7 @@ from aiogram.types import (
 )
 from loguru import logger
 
-from FSM import Get_admin, Rassylka, Message_from_admin, Next_level_base
+from FSM import (Get_admin, Rassylka, Message_from_admin, Next_level_base)
 from configs.passwords import admins_list, group_id
 from functions import antispam
 from structure import structure_menu
@@ -38,7 +38,8 @@ async def start(message: Message, bot, state: FSMContext):
                                                     '/help - справка по боту',
                                    message_thread_id=message.message_thread_id,
                                    parse_mode='html')
-            await Buttons(bot, message, structure_menu["Основное меню"]).new_main_menu_buttons()
+            await Buttons(bot, message, structure_menu["Основное меню"],
+                          menu_level='Пожалуйста выберите интересующий пункт меню:').new_main_menu_buttons()
         elif await antispam(bot, message) is False:
                 pass
         else:
@@ -46,7 +47,8 @@ async def start(message: Message, bot, state: FSMContext):
                                                     '/help - справка по боту',
                                    message_thread_id=message.message_thread_id,
                                    parse_mode='html')
-            await Buttons(bot, message, structure_menu["Основное меню"]).new_main_menu_buttons()
+            await Buttons(bot, message, structure_menu["Основное меню"],
+                          menu_level='Пожалуйста выберите интересующий пункт меню:').new_main_menu_buttons()
     except Exception as e:
         logger.exception('Ошибка в handlers/start', e)
         await bot.send_message(loggs_acc, f'Ошибка в handlers/start: {e}')
@@ -55,35 +57,37 @@ async def start(message: Message, bot, state: FSMContext):
 async def help(message: Message, bot, state: FSMContext):
     await state.clear()
     if message.chat.id in admins_list:      # условия демонстрации различных команд для админа и клиентов
-        await bot.send_message(message.chat.id, 'Основные команды поддерживаемые ботом:\n'
+        await bot.send_message(message.chat.id, '<b>Основные команды поддерживаемые ботом:\n</b>'
                                                      '/menu - главное функциональное меню\n'
                                                      '/start - инициализация бота\n'
                                                      '/help - справка по боту\n'
                                                      '/post - устроить рассылку\n'
                                                      '/sent_message -  отправка через бота сообщения клиенту по id чата\n'
                                                      '/day_visitors - пользователи посетившие бота сегодня\n'
-                                                     '/reset_cash - сбросить кэш базы данных')
+                                                     '/reset_cash - сбросить кэш базы данных',  parse_mode='html')
 
     elif await antispam(bot, message) is False:
         pass
 
     else:
-        await bot.send_message(message.chat.id, 'Основные команды поддерживаемые ботом:\n'
+        await bot.send_message(message.chat.id, '<b>Основные команды поддерживаемые ботом:\n</b>'
                                                      '/menu - главное функциональное меню\n'
                                                      '/start - инициализация бота\n'
                                                      '/help - справка по боту\n\n\n'
-                                                '@hlapps - разработка ботов любой сложности')
+                                                '@hlapps - разработка ботов любой сложности',  parse_mode='html')
 
 
 async def menu(message: Message, bot, state: FSMContext):
     await state.clear()
     if message.chat.id in admins_list:  # условия демонстрации различных команд для админа и клиентов
-        await Buttons(bot, message, structure_menu["Основное меню"]).new_main_menu_buttons()
+        await Buttons(bot, message, structure_menu["Основное меню"],
+                      menu_level='Пожалуйста выберите интересующий пункт меню:').new_main_menu_buttons()
     elif await antispam(bot, message) is False:
         pass
 
     else:
-        await Buttons(bot, message, structure_menu["Основное меню"]).new_main_menu_buttons()
+        await Buttons(bot, message, structure_menu["Основное меню"],
+                      menu_level='Пожалуйста выберите интересующий пункт меню:').new_main_menu_buttons()
 
 
 async def reset_cash(message: Message, bot, state: FSMContext):
@@ -176,15 +180,15 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
             return
     try:
         if callback.data == "📋 Каталоги товаров и цен":
-            await bot.send_message(callback.message.chat.id, 'Каталог сетевых фильтров: '
+            await bot.send_message(callback.message.chat.id, '<b>Каталог сетевых фильтров: </b>'
                                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                                                             'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                                                             'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing', parse_mode='html')
 
         elif callback.data == "🚚 Вопросы по логистике":
-            await Buttons(bot, callback.message, {},"Основное меню", "⚙️ Фрагмент в разработке").menu_buttons()
+            await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
 
         elif callback.data == "💰 Вопросы по оплате":
-            await Buttons(bot, callback.message, {},"Основное меню", "⚙️ Фрагмент в разработке").menu_buttons()
+            await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
 
         elif callback.data == "👨🏻‍💻 Чат с администратором":
             await bot.edit_message_text(chat_id=callback.message.chat.id,
@@ -194,15 +198,15 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                         'Для возвращения меню: /menu', message_id=callback.message.message_id)
 
             await bot.send_message(group_id, f'🚨!!!СРОЧНО!!!🚨\n'
-                                            f'поступил запрос на ЧАТ С АДМИНИСТРАТОРОМ от:\n'
+                                            f'<b>поступил запрос на ЧАТ С АДМИНИСТРАТОРОМ от:</b>\n'
                                             f'Ссылка: @{callback.from_user.username}\n'
                                             f'id чата: {callback.message.chat.id}\n'
-                                            f'Если ссылка на чат отсутствует запроси контакт или отправь свой с помощью команды:\n'
-                                            f'/sent_message - отправить сообщение с помощью бота')
+                                            f'<b>Если ссылка на чат отсутствует запроси контакт или отправь свой с помощью команды</b>:\n'
+                                            f'/sent_message - отправить сообщение с помощью бота', parse_mode="html")
             await state.set_state(Get_admin.message)
 
         elif callback.data == "ℹ️ О нас":
-            await Buttons(bot, callback.message, {},"Основное меню", "⚙️ Фрагмент в разработке").menu_buttons()
+            await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
 
         elif callback.data == "Основное меню":
             await Buttons(bot, callback.message, structure_menu["Основное меню"], menu_level= "Пожалуйста выберите интересующий пункт меню:").menu_buttons()
@@ -217,125 +221,90 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
             await Buttons(bot, callback.message, structure_menu["Основное меню"]["📦 Закупка оптом"][f'{callback.data}'],
                           back_button="📦 Закупка оптом", kategoriya= f'{callback.data}__',
                           menu_level= "Пожалуйста выберите бренд:").menu_buttons()
+            await state.update_data(kategoriya=callback.data)
             await state.set_state(Next_level_base.brand)
 
         elif '__' in callback.data:
             split_list = callback.data.split('__')
-            await Buttons(bot, callback.message,
-                          structure_menu["Основное меню"]["📦 Закупка оптом"][f'{split_list[0]}'][f'{split_list[1]}'],
-                          back_button=f'{split_list[0]}',
-                          menu_level="Пожалуйста выберите модель/серию:").menu_buttons()
-        # elif callback.data == 'page_two':
-        #     await Buttons(bot, callback.message).marka_buttons(next_button=None, back_button='page_one')
-        # elif callback.data == 'zayavka_yes':
-        #     if callback.message.chat.id == admin_account.admin:
-        #         await bot.send_message(admin_account.admin, 'не доступно для админа')
-        #     elif callback.from_user.username is not None:
-        #         await bot.edit_message_text(text='Заявка оформлена и передана мастеру, с Вами свяжутся в ближайшее время. '
-        #                                     'Спасибо, что выбрали нас.🤝\n\n'
-        #                                     'Если желаете сообщить что-то дополнительно, отправьте в сообщении 💬\n'
-        #                                     'Для нового расчета воспользуйтесь командой /price',
-        #                                     chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-        #         await bot.send_message(admin_account.admin, f'🚨!!!СРОЧНО!!!🚨\n'
-        #                                         f'Хозяин, поступила ЗАЯВКА от:\n'
-        #                                         f'Псевдоним: @{callback.from_user.username}\n'
-        #                                         f'id чата: {callback.message.chat.id}\n'
-        #                                         f'Быстрее согласуй дату и закрой заявку пока он не слился'
-        #                                         f'\n'
-        #                                         f'В случае положительной отработки заявки не забудь перевести клиента из базы '
-        #                                         f'"потенциальные клиенты" в базу "старые клиенты" с помощью команды\n '
-        #                                         f'/next_level_base\n'
-        #                                         f'/sent_message - отправить сообщение с помощью бота')
-        #     else:
-        #         await bot.send_message(callback.message.chat.id, 'Заявка оформлена и передана мастеру, пожалуйста перейдите в чат '
-        #                                           '@pogonin21 и напишите любое сообщение или отправьте в ответ на это '
-        #                                           'сообщение свой номер телефона в любом формате. '
-        #                                           'Спасибо, что выбрали нас.🤝\n'
-        #                                           'Для нового расчета воспользуйтесь командой /price')
-        #         await bot.send_message(admin_account.admin, f'🚨!!!СРОЧНО!!!🚨\n'
-        #                                         f'Хозяин, поступила ЗАЯВКА от:\n'
-        #                                         f'Псевдоним: @{callback.from_user.username}\n'
-        #                                         f'id чата: {callback.message.chat.id}\n'
-        #                                         f'Быстрее согласуй дату и закрой заявку пока он не слился\n'
-        #                                         f'В случае положительной отработки заявки не забудь перевести клиента из базы '
-        #                                         f'"потенциальные клиенты" в базу "старые клиенты" с помощью команды\n '
-        #                                         f'/next_level_base\n'
-        #                                         f'/sent_message - отправить сообщение с помощью бота')
-        #     await state.set_state(Another_model.message)
-        # elif callback.data in list(data.keys()):
-        #     await state.update_data(marka=callback.data)
-        #     await Buttons(bot, callback.message).models_buttons(callback.data)
-        # elif callback.data == 'price_menu':
-        #     if callback.message.reply_markup == kb_price:
-        #         pass
-        #     else:
-        #         await bot.edit_message_text(chat_id=callback.message.chat.id, text='Пожалуйста выберите марку Вашего '
-        #                                                                            'автомобиля 🚐:',
-        #                                     message_id=callback.message.message_id, reply_markup=kb_price)
-        # elif callback.data == 'price_menu_two':
-        #     if callback.message.reply_markup == kb_price_two:
-        #         pass
-        #     else:
-        #         await bot.edit_message_text(chat_id=callback.message.chat.id, text='Пожалуйста выберите марку Вашего '
-        #                                                                            'автомобиля 🚐:',
-        #                                     message_id=callback.message.message_id, reply_markup=kb_price_two)
-        # elif callback.data.startswith('another_'):
-        #     kb = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="↩️ Вернуться",
-        #                                                                      callback_data=callback.data[8:])]])
-        #     await state.update_data(marka=callback.data[8:])
-        #     await bot.edit_message_text(chat_id=callback.message.chat.id, text='Пожалуйста введите марку Вашего '
-        #                                                                        'автомобиля ⌨️:',
-        #                                 message_id=callback.message.message_id, reply_markup=kb)
-        #     await state.set_state(Another_model.model)
-        # elif callback.data.endswith('_class'):
-        #     mes = await bot.edit_message_text(text='загрузка..🚀', chat_id=callback.message.chat.id,
-        #                                       message_id=callback.message.message_id)
-        #     if callback.message.chat.id != admin_account.admin:
-        #         if data_from_database[1][0][4] >= 6:
-        #             await bot.edit_message_text(chat_id=callback.message.chat.id,
-        #                                         text='Превышен дневной лимит обращений.',
-        #                                         message_id=callback.message.message_id)
-        #             await db.update_table(telegram_id=callback.message.chat.id, update_dates=datetime.now(moscow_tz),
-        #                                   update_number_of_requests=data_from_database[1][0][4] + 1)
-        #             return
-        #         else:
-        #             await db.update_table(telegram_id=callback.message.chat.id, update_dates=datetime.now(moscow_tz),
-        #                                   update_number_of_requests=data_from_database[1][0][4] + 1)
-        #     data = await state.get_data()
-        #     data_marka = data.get('marka')
-        #     file_open = FSInputFile(f'{callback.data}.png', 'rb')
-        #     media = InputMediaPhoto(media=file_open, caption=f'Готово!\n'
-        #                                                      f'Стоимость услуг для Вашего автомобиля {data_marka}\n'
-        #                                                      f'соответствует {callback.data[0]} ценовому классу.\n'
-        #                                                      f'/help - справка по боту \n'
-        #                                                      f'/result - посмотреть на отзывы и результат работ')
-        #     await bot.edit_message_media(media=media, chat_id=callback.message.chat.id, message_id=mes.message_id)
-        #     await Buttons(bot, callback.message).zayavka_buttons(data_marka)
-        #     if callback.message.chat.id != admin_account.admin and data_from_database[1][0][4] < 2:
-        #         await bot.send_message(admin_account.admin, f'Хозяин! Замечена активность:\n'
-        #                                               f'Имя: {callback.from_user.first_name}\n'
-        #                                               f'Фамилия: {callback.from_user.last_name}\n'
-        #                                               f'Никнейм: {callback.from_user.username}\n'
-        #                                               f'Ссылка: @{callback.from_user.username}\n'
-        #                                               f'Авто: {data_marka} {callback.data[0]} класса')
-        #         await clients_base(bot, callback.message, auto_model=f'{data_marka} {callback.data[0]} класса').chec_and_record()
-        #     else:
-        #         return
+            if split_list[1].startswith("💰 "):
+                if split_list[1] == "💰 Каталог(Проекторы)":
+                    await Buttons(bot, callback.message, {}, "Проекторы", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                    # await bot.send_message(callback.message.chat.id, 'Каталог проекторов: '
+                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                elif split_list[1] == "💰 Каталог(Сканеры)":
+                    await Buttons(bot, callback.message, {}, "Barcode сканеры", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                    # await bot.send_message(callback.message.chat.id, 'Каталог сканеров: '
+                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                elif split_list[1] == "💰 Каталог(СФ)":
+                    await bot.send_message(callback.message.chat.id, 'Каталог сетевых фильтров: '
+                                                                 'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                                                                 'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                elif split_list[1] == "💰 Каталог(аудио)":
+                    await Buttons(bot, callback.message, {}, "Аудио аксессуары", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                    # await bot.send_message(callback.message.chat.id, 'Каталог аудио аксессуаров: '
+                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                elif split_list[1] == "💰 Каталог(хабы)":
+                    await Buttons(bot, callback.message, {}, "OTG/Хабы/кардридеры", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                    # await bot.send_message(callback.message.chat.id, 'Каталог OTG/Хабы/кардридеры: '
+                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+            else:
+                await Buttons(bot, callback.message,
+                              structure_menu["Основное меню"]["📦 Закупка оптом"][f'{split_list[0]}'][f'{split_list[1]}'],
+                              back_button=f'{split_list[0]}',
+                              menu_level="Пожалуйста выберите модель/серию:").menu_buttons()
+                await state.update_data(brand=split_list[1])
+                await state.set_state(Next_level_base.model)
+
         elif callback.data == 'Общая база клиентов':
             await bot.edit_message_text(text='База для рассылки: Общая база клиентов\nОтправь мне пост 💬',
                                         chat_id=callback.message.chat.id, message_id=callback.message.message_id)
             await state.update_data(base=callback.data)
             await state.set_state(Rassylka.post)
-        # elif callback.data == 'База потенциальных клиентов':
-        #     await bot.edit_message_text(text='База для рассылки: ️База потенциальных клиентов\nОтправь мне пост 💬',
-        #                                 chat_id=admin_account.admin, message_id=callback.message.message_id)
-        #     await state.update_data(base=callback.data)
-        #     await state.set_state(Rassylka.post)
-        # elif callback.data == 'База старых клиентов':
-        #     await bot.edit_message_text(text='База для рассылки: ️База старых клиентов\nОтправь мне пост 💬',
-        #                                 chat_id=admin_account.admin, message_id=callback.message.message_id)
-        #     await state.update_data(base=callback.data)
-        #     await state.set_state(Rassylka.post)
+
+        elif callback.data.startswith("💰 "):
+            if callback.data == '💰 Каталог(CB)':
+                await Buttons(bot, callback.message, {}, "Кабели", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                # await bot.send_message(callback.message.chat.id, 'Каталог кабелей: '
+                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+            elif callback.data == "💰 Каталог(PC)":
+                await Buttons(bot, callback.message, {}, "Блоки зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                # await bot.send_message(callback.message.chat.id, 'Каталог блоков зарядки: '
+                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+            elif callback.data == "💰 Каталог(BH,MP)":
+                await bot.send_message(callback.message.chat.id, 'Каталог беспроводных наушников: '
+                                                             'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-'
+                                                                 'U6C7U1R3lRJLsUX99FCVAsaax5E/edit?usp=sharing')
+            elif callback.data == "💰 Каталог(авто)":
+                await Buttons(bot, callback.message, {}, "Зарядки в авто", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                # await bot.send_message(callback.message.chat.id, 'Каталог зарядок в авто: '
+                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+            elif callback.data == "💰 Каталог(подставки)":
+                await bot.send_message(callback.message.chat.id, 'Каталог держателей/подставок устройств: '
+                                                             'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3N'
+                                                                 'aHut3TUY6COqvzCgYb2AEMV1Cx6Zc/edit?usp=sharing')
+            elif callback.data == "💰 Каталог(повербанки)":
+                await Buttons(bot, callback.message, {}, "Powerbanks/станции питания", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                # await bot.send_message(callback.message.chat.id, 'Каталог повербанков/станций питания: '
+                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+            elif callback.data == "💰 Каталог(зарядки)":
+                await Buttons(bot, callback.message, {}, "Беспроводные зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                # await bot.send_message(callback.message.chat.id, 'каталог беспроводных зарядок: '
+                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+        else:
+            await state.update_data(model=callback.data)
+            await bot.edit_message_text(text=f'Пожалуйста введите предполагаемое количество товара числом (в случае отмены отправьте 0)',
+                                        chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+            await state.set_state(Next_level_base.quantity)
+
     except Exception as e:
         logger.exception('Ошибка в handlers/check_callbacks', e)
         await bot.send_message(loggs_acc, f'Ошибка в handlers/check_callbacks: {e}')

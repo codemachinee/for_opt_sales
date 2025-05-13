@@ -24,14 +24,14 @@ class Sheet_base:  # класс базы данных
         self.worksheet_base = sh.worksheet('requests')
         self.worksheet_client_base = sh.worksheet('clients_base')
 
-    async def record_in_base(self, reasons=None, reason_text=None):  # функция поиска и записи в базу
+    async def record_in_base(self, kategoriya: str, brand: str, model: str, quantity: str, reasons: str='Закупка оптом'):  # функция поиска и записи в базу
         try:
             worksheet_len = len(self.worksheet_base.col_values(1)) + 1  # поиск первой свободной ячейки для записи во 2 столбце
-            self.worksheet_base.update(f'A{worksheet_len}:I{worksheet_len}', [[self.message.chat.id,
+            self.worksheet_base.update(f'A{worksheet_len}:K{worksheet_len}', [[self.message.chat.id,
                                        self.message.from_user.username, self.message.from_user.first_name,
-                                       self.message.from_user.last_name, None, self.tovar_name, reasons, reason_text,
+                                       self.message.from_user.last_name, None, reasons, kategoriya, brand, model,
+                                                                               quantity,
                                        str(datetime.now(moscow_tz).strftime('%d.%m.%y %H:%M'))]])
-            await self.chec_and_record_in_client_base(reasons, reason_text)
         except Exception as e:
             logger.exception('Исключение вызванное google_sheet/record_in_base', e)
             await self.bot.send_message(loggs_acc, f'Исключение вызванное google_sheet/record_in_base: {e}')
