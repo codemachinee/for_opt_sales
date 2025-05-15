@@ -1,24 +1,30 @@
-# библиотека работы с гугл таблицами
-# библиотека проверки даты
-import asyncio
 from datetime import datetime
 
 import gspread
 import pytz
+from gspread.exceptions import APIError
 from loguru import logger
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
-from aiogram.types import Message
 from configs.passwords import admin_id, loggs_acc
 
 moscow_tz = pytz.timezone('Europe/Moscow')
 admin_account = admin_id
 
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, max=3),
+       retry=retry_if_exception_type((APIError, ConnectionError, TimeoutError)))
 class Sheet_base:  # класс базы данных
 
     def __init__(self, bot, message):
         self.bot = bot
         self.message = message
-        gc = gspread.service_account(filename='configs\pidor-of-the-day-5880592e7067.json')  # доступ к гугл табл по ключевому файлу аккаунта разраба
+        gc = gspread.service_account(filename=r'configs\pidor-of-the-day-5880592e7067.json')  # доступ к гугл табл по ключевому файлу аккаунта разраба
         # открытие таблицы по юрл адресу:
         sh = gc.open('clients_china')
         self.worksheet_base = sh.worksheet('requests')

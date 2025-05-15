@@ -3,15 +3,10 @@ import asyncio
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import BotCommand
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 
-from functions import clients_base
-from google_sheets import Sheet_base
-from redis_file import redis_storage
-
-import redis
-
+from assistent import assistant_manager
+from configs.passwords import codemashine_test, loggs_acc
 from FSM import (
     Get_admin,
     Message_from_admin,
@@ -20,21 +15,23 @@ from FSM import (
     message_from_admin_chat,
     message_from_admin_text,
     message_from_user,
-    rassylka, save_all_user_information
+    rassylka,
+    save_all_user_information,
 )
-
-from configs import passwords
+from functions import clients_base
+from google_sheets import Sheet_base
 from handlers import (
-    # check_callbacks,
+    check_callbacks,
     day_visitors,
+    handler_user_message,
     help,
+    menu,
     post,
     reset_cash,
     sent_message,
     start,
-    menu, check_callbacks
 )
-from configs.passwords import codemashine_test, loggs_acc, lemonade
+from redis_file import redis_storage
 
 logger.remove()
 # Настраиваем логирование в файл с ограничением количества файлов
@@ -60,6 +57,7 @@ dp.message.register(start, Command(commands='start'))
 dp.message.register(help, Command(commands='help'))
 dp.message.register(menu, Command(commands='menu'))
 dp.message.register(post, Command(commands='post'))
+# dp.message.register(reload_assistant, Command(commands='reload_assistant'))
 dp.message.register(sent_message, Command(commands='sent_message'))
 dp.message.register(day_visitors, Command(commands='day_visitors'))
 dp.message.register(reset_cash, Command(commands='reset_cash'))
@@ -80,7 +78,7 @@ dp.message.register(check_callbacks, Next_level_base.brand)
 dp.message.register(check_callbacks, Next_level_base.model)
 dp.message.register(save_all_user_information, Next_level_base.quantity)
 
-# dp.message.register(check_message, F.text)
+dp.message.register(handler_user_message, F.text)
 
 
 async def set_commands():
@@ -98,11 +96,13 @@ async def main():
         logger.info('включение бота')
         await set_commands()
         await clients_base.load_base(await Sheet_base(bot, None).get_clients())
+        await assistant_manager.initialize()
         await dp.start_polling(bot)
     except Exception as e:
         logger.exception(f'Ошибка в боте: {e}')
     finally:
         await redis_storage.close()
+        await assistant_manager.cleanup()
         await bot.send_message(loggs_acc, 'выключение бота')
 
 

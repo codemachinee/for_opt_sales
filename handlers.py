@@ -1,31 +1,17 @@
-import json
-from datetime import datetime
+import asyncio
 
-import aiofiles
 import pytz
 from aiogram.fsm.context import FSMContext
-from aiogram.types import (
-    CallbackQuery,
-    FSInputFile,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    InputMediaPhoto,
-    Message,
-    ReplyKeyboardRemove,
-)
+from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
-from FSM import (Get_admin, Rassylka, Message_from_admin, Next_level_base)
-from configs.passwords import admins_list, group_id
-from functions import antispam
-from structure import structure_menu
-
-# from FSM import Another_model, Message_from_admin, Next_level_base, Rassylka
-from functions import clients_base, is_today
-
-from keyboards import Buttons, kb_main_menu
-from configs.passwords import loggs_acc
+from assistent import assistant_manager
+from configs.passwords import admins_list, group_id, loggs_acc
+from FSM import Get_admin, Message_from_admin, Next_level_base, Rassylka
+from functions import antispam, clients_base, is_today
+from keyboards import Buttons
 from redis_file import redis_storage
+from structure import HELP_TEXT, structure_menu
 
 moscow_tz = pytz.timezone("Europe/Moscow")
 
@@ -60,10 +46,11 @@ async def help(message: Message, bot, state: FSMContext):
         await bot.send_message(message.chat.id, '<b>Основные команды поддерживаемые ботом:\n</b>'
                                                      '/menu - главное функциональное меню\n'
                                                      '/start - инициализация бота\n'
-                                                     '/help - справка по боту\n'
+                                                     '/help - список доступных команд\n'
                                                      '/post - устроить рассылку\n'
                                                      '/sent_message -  отправка через бота сообщения клиенту по id чата\n'
                                                      '/day_visitors - пользователи посетившие бота сегодня\n'
+                                                     '/reload_assistant - перезагрузка ассистента\n'
                                                      '/reset_cash - сбросить кэш базы данных',  parse_mode='html')
 
     elif await antispam(bot, message) is False:
@@ -73,7 +60,7 @@ async def help(message: Message, bot, state: FSMContext):
         await bot.send_message(message.chat.id, '<b>Основные команды поддерживаемые ботом:\n</b>'
                                                      '/menu - главное функциональное меню\n'
                                                      '/start - инициализация бота\n'
-                                                     '/help - справка по боту\n\n\n'
+                                                     '/help - список доступных команд\n\n\n'
                                                 '@hlapps - разработка ботов любой сложности',  parse_mode='html')
 
 
@@ -130,6 +117,19 @@ async def sent_message(message: Message, bot, state: FSMContext):
         await bot.send_message(loggs_acc, f'Ошибка в handlers/sent_message: {e}')
 
 
+# async def reload_assistant(message: Message, bot, state: FSMContext):
+#     try:
+#         await state.clear()
+#         if message.chat.id in admins_list:
+#             await assistant_manager.manual_reload()
+#             await message.answer("Ассистент успешно перезагружен.")
+#         else:
+#             await bot.send_message(message.chat.id, 'У Вас нет прав для использования данной команды')
+#     except Exception as e:
+#         logger.exception('Ошибка в handlers/reload_assistant', e)
+#         await bot.send_message(loggs_acc, f'Ошибка в handlers/reload_assistant: {e}')
+
+
 async def day_visitors(message: Message, bot, state: FSMContext):
     await state.clear()
     today_list = []
@@ -182,13 +182,36 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
         if callback.data == "📋 Каталоги товаров и цен":
             await bot.send_message(callback.message.chat.id, '<b>Каталог сетевых фильтров: </b>'
                                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                                                             'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing', parse_mode='html')
+                                                             'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing',
+                                   parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(callback.message.chat.id, '<b>Каталог OTG/Хабы/кардридеры: </b>'
+                                   'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
+                                   'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(callback.message.chat.id, '<b>Каталог беспроводных наушников: </b>'
+                                                             'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-'
+                                                             'U6C7U1R3lRJLsUX99FCVAsaax5E/edit?usp=sharing',
+                                   parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(callback.message.chat.id, '<b>Каталог держателей/подставок устройств: </b>'
+                                                             'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3N'
+                                                             'aHut3TUY6COqvzCgYb2AEMV1Cx6Zc/edit?usp=sharing',
+                                   parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(callback.message.chat.id, '<b>Каталог Powerbanks/станции питания(BAVIN):</b> ',
+                                   'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
+                                   'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
 
         elif callback.data == "🚚 Вопросы по логистике":
             await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
 
         elif callback.data == "💰 Вопросы по оплате":
             await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+
+        elif callback.data == "❓ Как пользоваться":
+            await Buttons(bot, callback.message, {},"Основное меню",
+                          menu_level=HELP_TEXT).menu_buttons()
 
         elif callback.data == "👨🏻‍💻 Чат с администратором":
             await bot.edit_message_text(chat_id=callback.message.chat.id,
@@ -247,10 +270,14 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                     #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                     #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
                 elif split_list[1] == "💰 Каталог(хабы)":
-                    await Buttons(bot, callback.message, {}, "OTG/Хабы/кардридеры", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                    # await bot.send_message(callback.message.chat.id, 'Каталог OTG/Хабы/кардридеры: '
-                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                    await bot.send_message(callback.message.chat.id, 'Каталог OTG/Хабы/кардридеры: ',
+                                           'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
+                                           'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
+
+                elif split_list[1] == "💰 Каталог(повербанки)":
+                    await bot.send_message(callback.message.chat.id, 'Каталог Powerbanks/станции питания(BAVIN): ',
+                                           'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
+                                           'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
             else:
                 await Buttons(bot, callback.message,
                               structure_menu["Основное меню"]["📦 Закупка оптом"][f'{split_list[0]}'][f'{split_list[1]}'],
@@ -301,7 +328,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
         else:
             await state.update_data(model=callback.data)
-            await bot.edit_message_text(text=f'Пожалуйста введите предполагаемое количество товара числом (в случае отмены отправьте 0)',
+            await bot.edit_message_text(text='Пожалуйста введите предполагаемое количество товара числом (в случае отмены отправьте 0)',
                                         chat_id=callback.message.chat.id, message_id=callback.message.message_id)
             await state.set_state(Next_level_base.quantity)
 
@@ -309,5 +336,10 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
         logger.exception('Ошибка в handlers/check_callbacks', e)
         await bot.send_message(loggs_acc, f'Ошибка в handlers/check_callbacks: {e}')
 
+
+
+async def handler_user_message(message: Message):
+    answer = await assistant_manager.get_response(message.text)
+    await message.answer(answer, parse_mode='markdown')
 
 

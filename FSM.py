@@ -1,6 +1,7 @@
 # Импортируем необходимые классы из aiogram
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+
 from configs.passwords import group_id
 from google_sheets import Sheet_base
 from keyboards import Buttons
@@ -77,20 +78,10 @@ async def message_from_admin_text(message, state: FSMContext, bot):
 
 
 async def rassylka(message, bot, state: FSMContext):
-    data = await state.get_data()
-    data_base = data.get('base')
+    # data = await state.get_data()
+    # data_base = data.get('base')
     await Sheet_base(bot, message).rasylka_v_bazu()
     await state.clear()
-
-
-async def message_from_admin_chat(message, state: FSMContext, bot):
-    if str.isdigit(message.text) is True:
-        await state.update_data(user_id=message.text)
-        await bot.send_message(message.chat.id, 'Введите сообщение')
-        await state.set_state(Message_from_admin.message)
-    else:
-        await bot.send_message(message.chat.id, 'Неверные данные... Повтори попытку используя цифры (Например: 1338281106)')
-        await state.set_state(Message_from_admin.user_id)
 
 
 async def save_all_user_information(message, state: FSMContext, bot):

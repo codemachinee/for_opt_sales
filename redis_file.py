@@ -1,6 +1,6 @@
-import asyncio
+from typing import Optional
+
 from redis.asyncio import Redis
-from typing import Any, Optional, Union
 
 
 class RedisStorage:

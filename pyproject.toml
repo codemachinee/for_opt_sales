@@ -9,11 +9,63 @@ dependencies = [
     "asyncio>=3.4.3",
     "gspread>=6.2.0",
     "loguru>=0.7.3",
+    "mypy>=1.15.0",
     "pytz>=2025.2",
     "redis>=6.0.0",
+    "ruff>=0.11.9",
+    "tenacity>=9.1.2",
+    "yandex-cloud-ml-sdk>=0.10.0",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",
+]
+
+
+[tool.ruff]
+target-version = "py310"
+fix = true
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "build",
+    "dist",
+    ".github",
+    "ball",
+    ".dockerignore",
+    ".gitignore"
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["suetolog_bot"]
+
+[tool.mypy]
+mypy_path = "suetolog_bot"
+strict = true  # Включает строгую проверку типов
+ignore_missing_imports = true  # Не проверять сторонние библиотеки
+warn_unused_ignores = true  # Предупреждать об игнорируемых аннотациях
+warn_redundant_casts = true  # Предупреждать о ненужных `cast()`
+disallow_untyped_defs = true  # Запрещает функции без аннотации типов
+
+[mypy-paswords]
+disable_error_code = ["import-untyped", "module-name"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"  # Позволяет тестировать асинхронные функции
+testpaths = ["tests"]  # Указываем, где искать тесты
+python_files = ["test_*.py"]  # Указываем, какие файлы считаются тестами
+python_classes = ["Test*"]  # Классы, которые pytest воспринимает как тестовые
+python_functions = ["test_*"]  # Функции, которые pytest будет запускать
+addopts = "--strict-markers --tb=short --disable-warnings"  # Убираем лишние ворнинги
+
+markers = [
+    "slow: помечает тесты, которые работают медленно",
+    "db: тесты, связанные с базой данных",
+    "api: тесты, проверяющие API"
 ]
