@@ -8,11 +8,10 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # синхронизируем зависимости, удаляем лишнее
-RUN uv sync
-# RUN uv sync && \
-#     rm -rf /root/.cache && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN uv sync && \
+    rm -rf /root/.cache && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Копируем остальные файлы проекта в рабочую директорию
 COPY . .
