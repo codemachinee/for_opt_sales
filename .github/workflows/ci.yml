@@ -30,15 +30,15 @@ jobs:
       - name: Установка зависимостей
         run: uv sync --all-extras --dev
 
-      - name: Create pidor-of-the-day-af3dd140b860.json from secrets
+      - name: Create pidor-of-the-day-5880592e7067.json from secrets
         run: |
-          cat <<'EOF' > pidor-of-the-day-af3dd140b860.json
+          cat <<'EOF' > pidor-of-the-day-5880592e7067.json
           ${{ secrets.CONFIG_JSON }}
           EOF
 
       - name: Create passwords.py from secrets
         run: |
-          cat <<'EOF' > paswords.py
+          cat <<'EOF' > passwords.py
           ${{ secrets.PASWORDS_PY }}
           EOF
 
