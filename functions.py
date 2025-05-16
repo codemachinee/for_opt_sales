@@ -5,7 +5,7 @@ from aiogram.types import Message
 from loguru import logger
 
 from configs.passwords import loggs_acc
-from google_sheets import Sheet_base, moscow_tz
+from google_sheets import get_sheet_base, moscow_tz
 from redis_file import redis_storage
 
 
@@ -59,7 +59,8 @@ async def antispam(bot, message: Message) -> Any:
             await redis_storage.set(str(message.chat.id), 0, expire=1200)
             clients_list = await clients_base.get_clients()
             if str(message.chat.id) not in clients_list:
-                await Sheet_base(bot, message).chec_and_record_in_client_base()
+                sheet_base = await get_sheet_base()
+                await sheet_base.chec_and_record_in_client_base(bot, message)
             else:
                 await clients_base.update_clients(str(message.chat.id), "date", str(datetime.now(moscow_tz).strftime('%d.%m.%y %H:%M')))
             return True

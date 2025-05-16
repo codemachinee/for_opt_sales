@@ -68,7 +68,7 @@ class Buttons:  # класс для создания клавиатур разл
                 keyboard_list.append([button])
         kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list, resize_keyboard=True)
         await asyncio.sleep(0.3)
-        await self.bot.send_message(self.message.chat.id, f'{self.menu_level}',
+        await self.bot.send_message(chat_id=self.message.chat.id, text=f'{self.menu_level}',
                                    message_thread_id=self.message.message_thread_id, reply_markup=kb2)
 
     async def rasylka_buttons(self):

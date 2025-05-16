@@ -5,8 +5,8 @@ from aiogram.filters import Command
 from aiogram.types import BotCommand
 from loguru import logger
 
-from assistent import assistant_manager
-from configs.passwords import codemashine_test, loggs_acc
+from assistent import get_assistant_manager
+from configs.passwords import codemashine_test, loggs_acc, iamgroot
 from FSM import (
     Get_admin,
     Message_from_admin,
@@ -19,7 +19,7 @@ from FSM import (
     save_all_user_information,
 )
 from functions import clients_base
-from google_sheets import Sheet_base
+from google_sheets import get_sheet_base
 from handlers import (
     check_callbacks,
     day_visitors,
@@ -46,8 +46,8 @@ logger.add(
     diagnose=True       # Подробный вывод
 )
 
-# token = lemonade
-token = codemashine_test
+token = iamgroot
+# token = codemashine_test
 
 bot = Bot(token=token)
 dp = Dispatcher()
@@ -78,7 +78,7 @@ dp.message.register(check_callbacks, Next_level_base.brand)
 dp.message.register(check_callbacks, Next_level_base.model)
 dp.message.register(save_all_user_information, Next_level_base.quantity)
 
-dp.message.register(handler_user_message, F.text)
+dp.message.register(handler_user_message, F.text, F.chat.type == 'private')
 
 
 async def set_commands():
@@ -94,15 +94,18 @@ async def set_commands():
 async def main():
     try:
         logger.info('включение бота')
+        sheet_base =  await get_sheet_base()
         await set_commands()
-        await clients_base.load_base(await Sheet_base(bot, None).get_clients())
-        await assistant_manager.initialize()
+        await clients_base.load_base(await sheet_base.get_clients(bot))
+        assistant = await get_assistant_manager()
+        await assistant.initialize()
         await dp.start_polling(bot)
     except Exception as e:
         logger.exception(f'Ошибка в боте: {e}')
     finally:
+        assistant = await get_assistant_manager()
         await redis_storage.close()
-        await assistant_manager.cleanup()
+        await assistant.cleanup()
         await bot.send_message(loggs_acc, 'выключение бота')
 
 

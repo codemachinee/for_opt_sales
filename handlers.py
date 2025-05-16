@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 from loguru import logger
 
-from assistent import assistant_manager
+from assistent import get_assistant_manager
 from configs.passwords import admins_list, group_id, loggs_acc
 from FSM import Get_admin, Message_from_admin, Next_level_base, Rassylka
 from functions import antispam, clients_base, is_today
@@ -50,7 +50,7 @@ async def help(message: Message, bot, state: FSMContext):
                                                      '/post - устроить рассылку\n'
                                                      '/sent_message -  отправка через бота сообщения клиенту по id чата\n'
                                                      '/day_visitors - пользователи посетившие бота сегодня\n'
-                                                     '/reload_assistant - перезагрузка ассистента\n'
+                                                     # '/reload_assistant - перезагрузка ассистента\n'
                                                      '/reset_cash - сбросить кэш базы данных',  parse_mode='html')
 
     elif await antispam(bot, message) is False:
@@ -180,26 +180,26 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
             return
     try:
         if callback.data == "📋 Каталоги товаров и цен":
-            await bot.send_message(callback.message.chat.id, '<b>Каталог сетевых фильтров: </b>'
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог сетевых фильтров: </b>'
                                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing',
                                    parse_mode='html')
             await asyncio.sleep(0.2)
-            await bot.send_message(callback.message.chat.id, '<b>Каталог OTG/Хабы/кардридеры: </b>'
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог OTG/Хабы/кардридеры: </b>'
                                    'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
                                    'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
             await asyncio.sleep(0.2)
-            await bot.send_message(callback.message.chat.id, '<b>Каталог беспроводных наушников: </b>'
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог беспроводных наушников: </b>'
                                                              'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-'
                                                              'U6C7U1R3lRJLsUX99FCVAsaax5E/edit?usp=sharing',
                                    parse_mode='html')
             await asyncio.sleep(0.2)
-            await bot.send_message(callback.message.chat.id, '<b>Каталог держателей/подставок устройств: </b>'
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог держателей/подставок устройств: </b>'
                                                              'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3N'
                                                              'aHut3TUY6COqvzCgYb2AEMV1Cx6Zc/edit?usp=sharing',
                                    parse_mode='html')
             await asyncio.sleep(0.2)
-            await bot.send_message(callback.message.chat.id, '<b>Каталог Powerbanks/станции питания(BAVIN):</b> ',
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог Powerbanks/станции питания(BAVIN):</b> '
                                    'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
                                    'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
 
@@ -220,7 +220,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                         'Спасибо, что выбрали нас.🤝\n'
                                         'Для возвращения меню: /menu', message_id=callback.message.message_id)
 
-            await bot.send_message(group_id, f'🚨!!!СРОЧНО!!!🚨\n'
+            await bot.send_message(chay_id=group_id, text=f'🚨!!!СРОЧНО!!!🚨\n'
                                             f'<b>поступил запрос на ЧАТ С АДМИНИСТРАТОРОМ от:</b>\n'
                                             f'Ссылка: @{callback.from_user.username}\n'
                                             f'id чата: {callback.message.chat.id}\n'
@@ -261,21 +261,21 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                     #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                     #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
                 elif split_list[1] == "💰 Каталог(СФ)":
-                    await bot.send_message(callback.message.chat.id, 'Каталог сетевых фильтров: '
+                    await bot.send_message(chat_id=callback.message.chat.id, text='Каталог сетевых фильтров: '
                                                                  'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                                                                  'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
                 elif split_list[1] == "💰 Каталог(аудио)":
                     await Buttons(bot, callback.message, {}, "Аудио аксессуары", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                    # await bot.send_message(callback.message.chat.id, 'Каталог аудио аксессуаров: '
+                    # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог аудио аксессуаров: '
                     #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                     #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
                 elif split_list[1] == "💰 Каталог(хабы)":
-                    await bot.send_message(callback.message.chat.id, 'Каталог OTG/Хабы/кардридеры: ',
+                    await bot.send_message(chat_id=callback.message.chat.id, text='Каталог OTG/Хабы/кардридеры: '
                                            'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
                                            'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
 
                 elif split_list[1] == "💰 Каталог(повербанки)":
-                    await bot.send_message(callback.message.chat.id, 'Каталог Powerbanks/станции питания(BAVIN): ',
+                    await bot.send_message(chat_id=callback.message.chat.id, text='Каталог Powerbanks/станции питания(BAVIN): '
                                            'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
                                            'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
             else:
@@ -295,35 +295,35 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
         elif callback.data.startswith("💰 "):
             if callback.data == '💰 Каталог(CB)':
                 await Buttons(bot, callback.message, {}, "Кабели", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(callback.message.chat.id, 'Каталог кабелей: '
+                # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог кабелей: '
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(PC)":
                 await Buttons(bot, callback.message, {}, "Блоки зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(callback.message.chat.id, 'Каталог блоков зарядки: '
+                # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог блоков зарядки: '
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(BH,MP)":
-                await bot.send_message(callback.message.chat.id, 'Каталог беспроводных наушников: '
+                await bot.send_message(chat_id=callback.message.chat.id, text='Каталог беспроводных наушников: '
                                                              'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-'
                                                                  'U6C7U1R3lRJLsUX99FCVAsaax5E/edit?usp=sharing')
             elif callback.data == "💰 Каталог(авто)":
                 await Buttons(bot, callback.message, {}, "Зарядки в авто", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(callback.message.chat.id, 'Каталог зарядок в авто: '
+                # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог зарядок в авто: '
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(подставки)":
-                await bot.send_message(callback.message.chat.id, 'Каталог держателей/подставок устройств: '
+                await bot.send_message(chat_id=callback.message.chat.id, text='Каталог держателей/подставок устройств: '
                                                              'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3N'
                                                                  'aHut3TUY6COqvzCgYb2AEMV1Cx6Zc/edit?usp=sharing')
             elif callback.data == "💰 Каталог(повербанки)":
                 await Buttons(bot, callback.message, {}, "Powerbanks/станции питания", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(callback.message.chat.id, 'Каталог повербанков/станций питания: '
+                # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог повербанков/станций питания: '
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(зарядки)":
                 await Buttons(bot, callback.message, {}, "Беспроводные зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(callback.message.chat.id, 'каталог беспроводных зарядок: '
+                # await bot.send_message(chat_id=callback.message.chat.id, text='каталог беспроводных зарядок: '
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
         else:
@@ -339,7 +339,8 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
 
 
 async def handler_user_message(message: Message):
-    answer = await assistant_manager.get_response(message.text)
+    assistant = await get_assistant_manager()
+    answer = await assistant.get_response(message.text)
     await message.answer(answer, parse_mode='markdown')
 
 

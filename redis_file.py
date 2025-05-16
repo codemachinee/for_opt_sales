@@ -2,10 +2,12 @@ from typing import Optional
 
 from redis.asyncio import Redis
 
+from configs.passwords import REDIS_DB, REDIS_HOST, REDIS_PASSWORD, REDIS_PORT
+
 
 class RedisStorage:
-    def __init__(self, host: str = "localhost", port: int = 6379, db: int = 0, password: Optional[str] = None,
-                 decode_responses: bool = True):
+    def __init__(self, host: str = REDIS_HOST, port: int = REDIS_PORT, db: int = REDIS_DB,
+                 password: Optional[str] = REDIS_PASSWORD, decode_responses: bool = True):
         self.redis = Redis(host=host, port=port, db=db, password=password, decode_responses=decode_responses)
 
     async def set(self, key: str, value: int = 0, expire: Optional[int] = None):

@@ -7,9 +7,10 @@ dependencies = [
     "aiogram>=3.20.0.post0",
     "apscheduler>=3.11.0",
     "asyncio>=3.4.3",
-    "gspread>=6.2.0",
+    "gspread-asyncio>=2.0.0",
     "loguru>=0.7.3",
     "mypy>=1.15.0",
+    "pytest-asyncio>=0.26.0",
     "pytz>=2025.2",
     "redis>=6.0.0",
     "ruff>=0.11.9",
@@ -62,10 +63,13 @@ testpaths = ["tests"]  # Указываем, где искать тесты
 python_files = ["test_*.py"]  # Указываем, какие файлы считаются тестами
 python_classes = ["Test*"]  # Классы, которые pytest воспринимает как тестовые
 python_functions = ["test_*"]  # Функции, которые pytest будет запускать
-addopts = "--strict-markers --tb=short --disable-warnings"  # Убираем лишние ворнинги
+#addopts = "--strict-markers --tb=short --disable-warnings"  # Убираем лишние ворнинги
+asyncio_default_fixture_loop_scope = "function" # Цикл событий создаётся заново для каждого теста. Это безопасный вариант, избегающий влияния тестов друг на друга.
 
 markers = [
     "slow: помечает тесты, которые работают медленно",
     "db: тесты, связанные с базой данных",
-    "api: тесты, проверяющие API"
+    "api: тесты, проверяющие API",
+    "asyncio: mark test to run with asyncio event loop"
+
 ]

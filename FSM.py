@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
 from configs.passwords import group_id
-from google_sheets import Sheet_base
+from google_sheets import get_sheet_base
 from keyboards import Buttons
 from structure import structure_menu
 
@@ -80,7 +80,8 @@ async def message_from_admin_text(message, state: FSMContext, bot):
 async def rassylka(message, bot, state: FSMContext):
     # data = await state.get_data()
     # data_base = data.get('base')
-    await Sheet_base(bot, message).rasylka_v_bazu()
+    sheet_base = await get_sheet_base()
+    await sheet_base.rasylka_v_bazu(bot, message)
     await state.clear()
 
 
@@ -100,7 +101,8 @@ async def save_all_user_information(message, state: FSMContext, bot):
             await bot.send_message(chat_id=message.chat.id, text='<b>Заявка оформлена и передана администратору,</b> с Вами свяжутся в ближайшее время. '
                                              'Спасибо, что выбрали нас.🤝\n\n'
                                              'Для возвращенеи в главное меню воспользуйтесь командой /menu', parse_mode="html")
-            await Sheet_base(bot, message).record_in_base(kategoriya, brand, model, quantity)
+            sheet_base = await get_sheet_base()
+            await sheet_base.record_in_base(bot, message, kategoriya, brand, model, quantity)
             await state.clear()
             await bot.send_message(group_id, f'🚨!!!СРОЧНО!!!🚨\n'
                                              f'<b>Поступила ЗАЯВКА от:</b>\n'

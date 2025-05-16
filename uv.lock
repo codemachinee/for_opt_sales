@@ -357,9 +357,10 @@ dependencies = [
     { name = "aiogram" },
     { name = "apscheduler" },
     { name = "asyncio" },
-    { name = "gspread" },
+    { name = "gspread-asyncio" },
     { name = "loguru" },
     { name = "mypy" },
+    { name = "pytest-asyncio" },
     { name = "pytz" },
     { name = "redis" },
     { name = "ruff" },
@@ -377,9 +378,10 @@ requires-dist = [
     { name = "aiogram", specifier = ">=3.20.0.post0" },
     { name = "apscheduler", specifier = ">=3.11.0" },
     { name = "asyncio", specifier = ">=3.4.3" },
-    { name = "gspread", specifier = ">=6.2.0" },
+    { name = "gspread-asyncio", specifier = ">=2.0.0" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "mypy", specifier = ">=1.15.0" },
+    { name = "pytest-asyncio", specifier = ">=0.26.0" },
     { name = "pytz", specifier = ">=2025.2" },
     { name = "redis", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.11.9" },
@@ -598,15 +600,29 @@ wheels = [
 
 [[package]]
 name = "gspread"
-version = "6.2.0"
+version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-auth" },
     { name = "google-auth-oauthlib" },
+    { name = "strenum" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/40/14/706185cd71b7181b4922717dae60ea7e4fa63ba5d9d078e88decf70ac4fd/gspread-6.2.0.tar.gz", hash = "sha256:bc3d02d1c39e0b40bfc8035b4fec407aa71a17f343fc81cc7e3f75bfa6555de6", size = 81974 }
+sdist = { url = "https://files.pythonhosted.org/packages/35/ae/1fe553b9287125f3d459d034361176c67d523c2e8901e5bc7ddd4c986d24/gspread-6.0.2.tar.gz", hash = "sha256:0982beeb07fa3ec4482a3aaa96ca13a1e6b427a0aca4058beab4cdc33c0cbb64", size = 73354 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/bd/c1baae68301065079bd3c61150d27a9d4ec1ea4572d955362c810322d73c/gspread-6.2.0-py3-none-any.whl", hash = "sha256:7fa1a11e1ecacc6c5946fa016be05941baca8540404314f59aec963dd8ae5db3", size = 59870 },
+    { url = "https://files.pythonhosted.org/packages/5e/b0/1be0948330a520df81dd7c6002a69d1e3cc13ff6c5f50ff3232e3d90e19b/gspread-6.0.2-py3-none-any.whl", hash = "sha256:0238ba43f3bd45e7fa96fd206e9ceb73b03c2896eb143d7f4373c6d0cfe6fddf", size = 53917 },
+]
+
+[[package]]
+name = "gspread-asyncio"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "gspread" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bf/7e/480054799ce34cec733d9d33951a801ffd2aea16dcdeea6801807aa44d83/gspread_asyncio-2.0.0.tar.gz", hash = "sha256:693d81a80b17f65cdbb16a292b8cb8a17ffe886dd5aeadbc4a06188ebbc4b2b6", size = 25402 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/82/79c5d77c2f7175e14f9af971c692492c1eaf8a8bd4ccd5ec8d4c22e962a6/gspread_asyncio-2.0.0-py3-none-any.whl", hash = "sha256:63713a5337d52d538bb26815d96f98950cbdfae67600e1c137cea8608f41e5c4", size = 23045 },
 ]
 
 [[package]]
@@ -1052,6 +1068,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-asyncio"
+version = "0.26.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8e/c4/453c52c659521066969523e87d85d54139bbd17b78f09532fb8eb8cdb58e/pytest_asyncio-0.26.0.tar.gz", hash = "sha256:c4df2a697648241ff39e7f0e4a73050b03f123f760673956cf0d72a4990e312f", size = 54156 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/7f/338843f449ace853647ace35870874f69a764d251872ed1b4de9f234822c/pytest_asyncio-0.26.0-py3-none-any.whl", hash = "sha256:7b51ed894f4fbea1340262bdae5135797ebbe21d8638978e35d31c6d19f72fb0", size = 19694 },
+]
+
+[[package]]
 name = "pytz"
 version = "2025.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1162,6 +1190,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz", hash = "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc", size = 20372 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl", hash = "sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2", size = 10235 },
+]
+
+[[package]]
+name = "strenum"
+version = "0.4.15"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/ad/430fb60d90e1d112a62ff57bdd1f286ec73a2a0331272febfddd21f330e1/StrEnum-0.4.15.tar.gz", hash = "sha256:878fb5ab705442070e4dd1929bb5e2249511c0bcf2b0eeacf3bcd80875c82eff", size = 23384 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/69/297302c5f5f59c862faa31e6cb9a4cd74721cd1e052b38e464c5b402df8b/StrEnum-0.4.15-py3-none-any.whl", hash = "sha256:a30cda4af7cc6b5bf52c8055bc4bf4b2b6b14a93b574626da33df53cf7740659", size = 8851 },
 ]
 
 [[package]]

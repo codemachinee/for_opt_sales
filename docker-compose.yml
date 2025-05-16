@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: always
+
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: for_opt_sales_bot
+    depends_on:
+      - redis
+    volumes:
+      - ./configs/passwords.py:/app/configs/passwords.py
+      - ./configs/pidor-of-the-day-5880592e7067.json:/app/configs/pidor-of-the-day-5880592e7067.json
+      - ./loggs.log:/app/loggs.log
+    restart: always
+
+volumes:
+  redis-data:

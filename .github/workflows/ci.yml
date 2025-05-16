@@ -1,0 +1,98 @@
+name: Deploy Suetolog Bot
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read         # Разрешения на доступ к коду репозитория
+  packages: write        # Разрешения на загрузку пакетов
+  id-token: write        # Разрешения для работы с токенами
+  actions: read          # Разрешения для работы с действиями
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout репозиторий
+        uses: actions/checkout@v4
+
+      - name: Установка Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: установка uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Установка зависимостей
+        run: uv sync --all-extras --dev
+
+      - name: Create pidor-of-the-day-af3dd140b860.json from secrets
+        run: |
+          cat <<'EOF' > pidor-of-the-day-af3dd140b860.json
+          ${{ secrets.CONFIG_JSON }}
+          EOF
+
+      - name: Create passwords.py from secrets
+        run: |
+          cat <<'EOF' > paswords.py
+          ${{ secrets.PASWORDS_PY }}
+          EOF
+
+      - name: Запуск тестов
+        run: |
+          uv run pytest -v
+
+  build_and_push_in_GHCR:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout репозиторий
+        uses: actions/checkout@v4
+
+      - name: Вход в GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Сборка Docker образа
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/suetolog-bot:latest .
+
+      - name: Push Docker образ в GHCR
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/suetolog-bot:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push_in_GHCR
+
+    steps:
+      - name: Checkout репозиторий
+        uses: actions/checkout@v4
+
+      - name: Вход на сервер по SSH и деплой
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            # Входим в GHCR
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            cd /root/for_opt_sales
+            # Полная очистка кэша, образов и ненужных данных
+            docker system prune -af --volumes
+            # Останавливаем текущие контейнеры и удаляем ненужные
+            docker compose down
+            # Подтягиваем актуальные образы (если используются image: ...)
+            docker compose pull
+            # Запускаем всё заново
+            docker compose up -d --remove-orphans
+
