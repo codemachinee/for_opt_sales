@@ -32,13 +32,13 @@ jobs:
 
       - name: Create pidor-of-the-day-5880592e7067.json from secrets
         run: |
-          cat <<'EOF' > pidor-of-the-day-5880592e7067.json
+          cat <<'EOF' > configs.pidor-of-the-day-5880592e7067.json
           ${{ secrets.CONFIG_JSON }}
           EOF
 
       - name: Create passwords.py from secrets
         run: |
-          cat <<'EOF' > passwords.py
+          cat <<'EOF' > configs.passwords.py
           ${{ secrets.PASWORDS_PY }}
           EOF
 
