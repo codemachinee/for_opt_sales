@@ -11,7 +11,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_connect_to_google():
     try:
-        gc = gspread.service_account(filename=r'configs\pidor-of-the-day-5880592e7067.json')
+        gc = gspread.service_account(filename=r'configs/pidor-of-the-day-5880592e7067.json')
         # Пытаемся открыть таблицу "clients_base_WB"
         sh = gc.open('clients_china')
         worksheet = sh.worksheet('requests')
