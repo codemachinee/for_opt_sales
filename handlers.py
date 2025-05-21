@@ -166,7 +166,7 @@ async def day_visitors(message: Message, bot, state: FSMContext):
 
 
 async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
-    assert callback.message is not None   # обозначаем для проверочной библиотеки mypy, чтобы избегать лишних ошибок при тесте
+    assert callback is not None   # обозначаем для проверочной библиотеки mypy, чтобы избегать лишних ошибок при тесте
     assert callback.data is not None
     if callback.message.chat.id not in admins_list:
         antispam_answer = await antispam(bot, callback.message)
@@ -341,6 +341,6 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
 async def handler_user_message(message: Message):
     assistant = await get_assistant_manager()
     answer = await assistant.get_response(message.text)
-    await message.answer(answer, parse_mode='markdown')
+    await message.answer(answer)
 
 
