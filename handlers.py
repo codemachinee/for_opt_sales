@@ -202,6 +202,26 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог Powerbanks/станции питания(BAVIN):</b> '
                                    'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
                                    'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог зарядок в авто(BAVIN):</b> '
+                                        'https://docs.google.com/spreadsheets/d/1JETnwyxapfGtDzFXXQQg1AM2tDwfNgSt/edit'
+                                        '?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Беспроводные зарядки(BAVIN):</b> '
+                                   'https://docs.google.com/spreadsheets/d/1za6crQO_uaPaPZhbPsOo2okNfjNX6JDw/edit?usp='
+                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Аудио аксессуары(BAVIN):</b> '
+                                   'https://docs.google.com/spreadsheets/d/1EZcHLMD6V547QjJOY_jCCwC3Q2mvBnM3/edit?usp='
+                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог блоков зарядки(BAVIN):</b> '
+                                   'https://docs.google.com/spreadsheets/d/1d4EHBeFg-SVMvkc12dnQTNd_vYjsi-Vb/edit?usp='
+                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог серверных комплектующих:</b> '
+                                   'https://docs.google.com/spreadsheets/d/1XJlkP2ro0EXX3ZudN__Z5Y4e5G2HLhsu/edit?usp='
+                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
 
         elif callback.data == "🚚 Вопросы по логистике":
             await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
@@ -264,11 +284,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                     await bot.send_message(chat_id=callback.message.chat.id, text='Каталог сетевых фильтров: '
                                                                  'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                                                                  'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
-                elif split_list[1] == "💰 Каталог(аудио)":
-                    await Buttons(bot, callback.message, {}, "Аудио аксессуары", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                    # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог аудио аксессуаров: '
-                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+
                 elif split_list[1] == "💰 Каталог(хабы)":
                     await bot.send_message(chat_id=callback.message.chat.id, text='Каталог OTG/Хабы/кардридеры: '
                                            'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
@@ -277,6 +293,16 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                 elif split_list[1] == "💰 Каталог(повербанки)":
                     await bot.send_message(chat_id=callback.message.chat.id, text='Каталог Powerbanks/станции питания(BAVIN): '
                                            'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
+                                           'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
+
+                elif split_list[1] == "💰 Каталог(авто)":
+                    await bot.send_message(chat_id=callback.message.chat.id, text='Каталог Зарядки в авто(BAVIN): '
+                                           'https://docs.google.com/spreadsheets/d/1JETnwyxapfGtDzFXXQQg1AM2tDwfNgSt/'
+                                           'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
+
+                elif split_list[1] == "💰 Каталог(аудио)":
+                    await bot.send_message(chat_id=callback.message.chat.id, text='Аудио аксессуары(BAVIN): '
+                                           'https://docs.google.com/spreadsheets/d/1EZcHLMD6V547QjJOY_jCCwC3Q2mvBnM3/'
                                            'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
             else:
                 await Buttons(bot, callback.message,
@@ -299,19 +325,19 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(PC)":
-                await Buttons(bot, callback.message, {}, "Блоки зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог блоков зарядки: '
-                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                # await Buttons(bot, callback.message, {}, "Блоки зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                await bot.send_message(chat_id=callback.message.chat.id, text='Каталог блоков зарядки: '
+                                                             'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
+                                                             'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(BH,MP)":
                 await bot.send_message(chat_id=callback.message.chat.id, text='Каталог беспроводных наушников: '
                                                              'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-'
                                                                  'U6C7U1R3lRJLsUX99FCVAsaax5E/edit?usp=sharing')
             elif callback.data == "💰 Каталог(авто)":
-                await Buttons(bot, callback.message, {}, "Зарядки в авто", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(chat_id=callback.message.chat.id, text='Каталог зарядок в авто: '
-                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                await bot.send_message(chat_id=callback.message.chat.id, text='Каталог зарядок в авто: '
+                                                             'https://docs.google.com/spreadsheets/d/1JETnwyxapfGtD'
+                                                             'zFXXQQg1AM2tDwfNgSt/edit?usp=sharing&ouid=117298760559'
+                                                             '545275811&rtpof=true&sd=true')
             elif callback.data == "💰 Каталог(подставки)":
                 await bot.send_message(chat_id=callback.message.chat.id, text='Каталог держателей/подставок устройств: '
                                                              'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3N'
@@ -322,10 +348,10 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                 #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
                 #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
             elif callback.data == "💰 Каталог(зарядки)":
-                await Buttons(bot, callback.message, {}, "Беспроводные зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                # await bot.send_message(chat_id=callback.message.chat.id, text='каталог беспроводных зарядок: '
-                #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                # await Buttons(bot, callback.message, {}, "Беспроводные зарядки", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                await bot.send_message(chat_id=callback.message.chat.id, text='каталог беспроводных зарядок(BAVIN): '
+                                       'https://docs.google.com/spreadsheets/d/1za6crQO_uaPaPZhbPsOo2okNfjNX6JDw/edit?'
+                                       'usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
         else:
             await state.update_data(model=callback.data)
             await bot.edit_message_text(text='Пожалуйста введите предполагаемое количество товара числом (в случае отмены отправьте 0)',
