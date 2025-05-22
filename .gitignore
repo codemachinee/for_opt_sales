@@ -11,3 +11,4 @@ __pycache__/
 *$py.class
 .mypy_cache/
 .idea/
+local_data/
