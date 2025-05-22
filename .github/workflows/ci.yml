@@ -91,9 +91,10 @@ jobs:
             # Полная очистка кэша, образов и ненужных данных
             docker system prune -af --volumes
             # Останавливаем текущие контейнеры и удаляем ненужные
-            docker compose down
+            docker compose down --remove-orphans
+            docker compose rm -f for_opt_sales_bot || true
             # Подтягиваем актуальные образы (если используются image: ...)
             docker compose pull
             # Запускаем всё заново
-            docker compose up -d --remove-orphans
+            docker compose up -d
 
