@@ -212,8 +212,8 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                    'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Аудио аксессуары(BAVIN):</b> '
-                                   'https://docs.google.com/spreadsheets/d/1EZcHLMD6V547QjJOY_jCCwC3Q2mvBnM3/edit?usp='
-                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1IbLXLZteFidJ0jqW5Hq1b9Z0GTgyB-cYPou_4oV1_'
+                                   '-4/edit?gid=1246518664#gid=1246518664', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог блоков зарядки(BAVIN):</b> '
                                    'https://docs.google.com/spreadsheets/d/1d4EHBeFg-SVMvkc12dnQTNd_vYjsi-Vb/edit?usp='
@@ -302,8 +302,8 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
 
                 elif split_list[1] == "💰 Каталог(аудио)":
                     await bot.send_message(chat_id=callback.message.chat.id, text='Аудио аксессуары(BAVIN): '
-                                           'https://docs.google.com/spreadsheets/d/1EZcHLMD6V547QjJOY_jCCwC3Q2mvBnM3/'
-                                           'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
+                                           'https://docs.google.com/spreadsheets/d/1IbLXLZteFidJ0jqW5Hq1b9Z0GTgyB-cYPou'
+                                           '_4oV1_-4/edit?gid=1246518664#gid=1246518664')
             else:
                 await Buttons(bot, callback.message,
                               structure_menu["Основное меню"]["📦 Закупка оптом"][f'{split_list[0]}'][f'{split_list[1]}'],
