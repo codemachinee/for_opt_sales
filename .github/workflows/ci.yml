@@ -46,6 +46,7 @@ jobs:
       - name: Запуск тестов
         run: |
           uv run pytest -v
+          
 
   build_and_push_in_GHCR:
     runs-on: ubuntu-latest

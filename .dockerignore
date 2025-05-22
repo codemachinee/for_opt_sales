@@ -9,3 +9,9 @@ __pycache__/
 logs/
 *.log
 .dockerignore
+*.pyd
+*.sqlite3
+.env
+tests/
+.git/
+README.md
