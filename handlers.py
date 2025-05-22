@@ -200,8 +200,8 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                    parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог Powerbanks/станции питания(BAVIN):</b> '
-                                   'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
-                                   'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/19dh-GbEH89wRd0gqMSnk4ciTeE_lNrP-/edit?usp='
+                                    'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог зарядок в авто(BAVIN):</b> '
                                         'https://docs.google.com/spreadsheets/d/1JETnwyxapfGtDzFXXQQg1AM2tDwfNgSt/edit'
@@ -292,8 +292,8 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
 
                 elif split_list[1] == "💰 Каталог(повербанки)":
                     await bot.send_message(chat_id=callback.message.chat.id, text='Каталог Powerbanks/станции питания(BAVIN): '
-                                           'https://docs.google.com/spreadsheets/d/1ZmC3cxYSyupkvNyevNKkpt4LiFniypUH/'
-                                           'edit?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
+                                           'https://docs.google.com/spreadsheets/d/19dh-GbEH89wRd0gqMSnk4ciTeE_lNrP-/ed'
+                                           'it?usp=sharing&ouid=117298760559545275811&rtpof=true&sd=true')
 
                 elif split_list[1] == "💰 Каталог(авто)":
                     await bot.send_message(chat_id=callback.message.chat.id, text='Каталог Зарядки в авто(BAVIN): '

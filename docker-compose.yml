@@ -9,10 +9,7 @@ services:
     restart: always
 
   bot:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: for_opt_sales_bot
+    image: ghcr.io/codemachinee//for_opt_sales:latest
     depends_on:
       - redis
     volumes:
