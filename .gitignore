@@ -2,11 +2,8 @@
 loggs*
 errors*
 ./configs/passwords.py
-pidor-of-the-day-5880592e7067.json
-clients.json
-Рассчет экономики.xlsx
+./configs/pidor-of-the-day-5880592e7067.json
 loggs.log
-errors.log
 tables/
 configs/
 __pycache__/
@@ -14,4 +11,3 @@ __pycache__/
 *$py.class
 .mypy_cache/
 .idea/
-prompts/
