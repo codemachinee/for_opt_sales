@@ -9,7 +9,7 @@ services:
     restart: always
 
   bot:
-    image: ghcr.io/codemachinee//for_opt_sales:latest
+    image: ghcr.io/codemachinee/for_opt_sales:latest
     depends_on:
       - redis
     volumes:

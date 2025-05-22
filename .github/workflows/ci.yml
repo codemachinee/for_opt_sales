@@ -92,7 +92,6 @@ jobs:
             # Останавливаем текущие контейнеры и удаляем ненужные
             docker compose down --remove-orphans
             docker compose rm -f for_opt_sales_bot || true
-            docker image rm ghcr.io/${{ github.repository_owner }}/for_opt_sales:latest || true
             # Полная очистка кэша, образов и ненужных данных
             docker system prune -af --volumes
             # Подтягиваем актуальные образы (если используются image: ...)
