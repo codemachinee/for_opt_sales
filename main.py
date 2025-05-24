@@ -16,7 +16,7 @@ from FSM import (
     message_from_admin_text,
     message_from_user,
     rassylka,
-    save_all_user_information,
+    count_price_step_one, count_price_step_two
 )
 from functions import clients_base
 from google_sheets import get_sheet_base
@@ -29,7 +29,7 @@ from handlers import (
     post,
     reset_cash,
     sent_message,
-    start,
+    start, reload_tables,
 )
 from redis_file import redis_storage
 
@@ -57,12 +57,11 @@ dp.message.register(start, Command(commands='start'))
 dp.message.register(help, Command(commands='help'))
 dp.message.register(menu, Command(commands='menu'))
 dp.message.register(post, Command(commands='post'))
-# dp.message.register(reload_assistant, Command(commands='reload_assistant'))
+dp.message.register(reload_tables, Command(commands='reload_tables'))
 dp.message.register(sent_message, Command(commands='sent_message'))
 dp.message.register(day_visitors, Command(commands='day_visitors'))
 dp.message.register(reset_cash, Command(commands='reset_cash'))
 
-# dp.message.register(anoter_model_registration, Another_model.model)
 #
 dp.message.register(message_from_user, Get_admin.message)
 #
@@ -71,12 +70,14 @@ dp.message.register(rassylka, Rassylka.post)
 dp.message.register(message_from_admin_chat, Message_from_admin.user_id)
 dp.message.register(message_from_admin_text, Message_from_admin.message)
 
+dp.callback_query.register(count_price_step_one, Next_level_base.info)
+dp.message.register(count_price_step_two, Next_level_base.quantity)
+
+dp.callback_query.register(check_callbacks, Next_level_base.kategoriya)
+dp.callback_query.register(check_callbacks, Next_level_base.brand)
+dp.callback_query.register(check_callbacks, Next_level_base.model)
+dp.callback_query.register(check_callbacks, Next_level_base.price)
 dp.callback_query.register(check_callbacks, F.data)
-#
-dp.message.register(check_callbacks, Next_level_base.kategoriya)
-dp.message.register(check_callbacks, Next_level_base.brand)
-dp.message.register(check_callbacks, Next_level_base.model)
-dp.message.register(save_all_user_information, Next_level_base.quantity)
 
 dp.message.register(handler_user_message, F.text, F.chat.type == 'private')
 

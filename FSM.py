@@ -1,9 +1,11 @@
 # Импортируем необходимые классы из aiogram
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from loguru import logger
 
-from configs.passwords import group_id
-from google_sheets import get_sheet_base
+from configs.passwords import group_id, loggs_acc
+from functions import get_usd_cny_rate
+from google_sheets import get_sheet_base, find_product
 from keyboards import Buttons
 from structure import structure_menu
 
@@ -27,29 +29,15 @@ class Next_level_base(StatesGroup):
     kategoriya = State()
     brand = State()
     model = State()
+    info = State()
     quantity = State()
+    price = State()
 
 
-
-async def anoter_model_registration(message, state: FSMContext, bot):
-    data = await state.get_data()
-    data_marka = data.get('marka')
-    await bot.send_message(message.chat.id, 'Cпасибо! Я передал информацию мастеру. Прайс будет выслан Вам '
-                                                     'в ближайшее время.')
-    await bot.send_message(group_id, f'🚨!!!СРОЧНО!!!🚨\n'
-                           f'Хозяин, поступил запрос прайса на отсутствующее в моем списке авто от:\n\n'
-                           f'Имя: {message.from_user.first_name}\n'
-                           f'Фамилия: {message.from_user.last_name}\n'
-                           f'Никнейм: {message.from_user.username}\n'
-                           f'id чата: {message.chat.id}\n'
-                           f'Ссылка: @{message.from_user.username}\n'
-                           f'Авто: {data_marka} {message.text}\n\n'
-                           f'Быстрее отправь прайс на его корыто пока он не слился.\n'
-                           f'В случае положительной отработки заявки не забудь перевести клиента из базы '
-                           f'"потенциальные клиенты" в базу "старые клиенты" с помощью команды:\n '
-                           f'/next_level_base')
-    # await clients_base(bot, message, auto_model=f'{data_marka} {message.text}').chec_and_record()
-    await state.clear()
+class Get_product_info(StatesGroup):
+    info = State()
+    quantity = State()
+    price = State()
 
 
 async def message_from_user(message, state: FSMContext, bot):
@@ -100,7 +88,7 @@ async def save_all_user_information(message, state: FSMContext, bot):
             quantity = message.text
             await bot.send_message(chat_id=message.chat.id, text='<b>Заявка оформлена и передана администратору,</b> с Вами свяжутся в ближайшее время. '
                                              'Спасибо, что выбрали нас.🤝\n\n'
-                                             'Для возвращенеи в главное меню воспользуйтесь командой /menu', parse_mode="html")
+                                             'Для возвращения в главное меню воспользуйтесь командой /menu', parse_mode="html")
             sheet_base = await get_sheet_base()
             await sheet_base.record_in_base(bot, message, kategoriya, brand, model, quantity)
             await state.clear()
@@ -118,6 +106,7 @@ async def save_all_user_information(message, state: FSMContext, bot):
                                              f'<b>Дополнительная информация в гугл таблице: </b>https://docs.google.com/spread'
                                              f'sheets/d/1upFEYAoBg1yio5oC2KFX6WMb0FDBslw-NplIXHNzR9Y/edit?usp=sharing',
                                    parse_mode='html')
+            await state.clear()
     else:
         await bot.send_message(message.chat.id, 'Неверные данные... Повторите попытку, используя цифры (Например: 11)')
         await state.set_state(Next_level_base.quantity)
@@ -126,3 +115,60 @@ async def save_all_user_information(message, state: FSMContext, bot):
 # async def next_level(message, bot, state: FSMContext):
 #     await clients_base(bot, message).perevod_v_bazu(message.text)
 #     await state.clear()
+
+async def count_price_step_one(callback, bot, state: FSMContext):
+    try:
+        product_list = await find_product(callback.data)
+        if '__' in callback.data:
+            await state.update_data(info=product_list)
+            await bot.edit_message_text(
+                text='Пожалуйста введите количество товара числом (в случае отмены отправьте 0)',
+                chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+            await state.set_state(Next_level_base.quantity)
+        else:
+            await state.set_state(Next_level_base.model)
+            await Buttons(bot, callback.message, keys_dict=None).speed_find_of_product_buttons(product_list)
+    except Exception as e:
+        logger.exception('Ошибка в FSM/count_price_step_one', e)
+        await bot.send_message(loggs_acc, f'Ошибка в FSM/count_price_step_one: {e}')
+
+
+async def count_price_step_two(message, state: FSMContext, bot):
+    try:
+        if str.isdigit(message.text) is True:
+            data = await state.get_data()
+            if message.text == '0':
+                await Buttons(bot, message, structure_menu["Основное меню"],
+                              menu_level="Вы прервали оформление заявки.\nПожалуйста выберите "
+                                         "интересующий пункт меню:").new_main_menu_buttons()
+                await state.clear()
+
+            elif int(message.text) < int(data.get('info')[0]['MOQ, шт']):
+                await bot.send_message(message.chat.id, f"Минимальное количество заказа (MOQ) данной модели: "
+                                                        f"{data.get('info')[0]['MOQ, шт']} шт.")
+                await state.set_state(Next_level_base.quantity)
+
+            else:
+                mess = await bot.send_message(text=f'Считаем..🚀', chat_id=message.chat.id)
+                usd_uan = await get_usd_cny_rate()
+                uan_rate = float(usd_uan['CNY']) + 1.5
+                usd_rate = float(usd_uan['USD']) + 6.6
+                price_uan = float(data.get('info')[0]['Цена,￥'].replace(",", ".")) if data.get('info')[0]['Цена,￥'] else 0
+                quantity = int(message.text)
+                logistic_price_of_MOQ = float(data.get('info')[0]['Стоимость логистики за MOQ, $'].replace(",", ".")) if data.get('info')[0]['Стоимость логистики за MOQ, $'] else 0
+                end_price = ((price_uan * uan_rate * quantity) + (usd_rate * logistic_price_of_MOQ)*1.2)
+                await state.update_data(quantity=quantity)
+                await state.update_data(price=end_price)
+                await Buttons(bot, mess, None, menu_level=f'<b>Расчет итоговой цены:</b>\n\n'
+                              f'<b>Модель:</b> {data.get("info")[0]["Модель"]}\n'
+                              f'<b>Артикул:</b> {data.get("info")[0]["Артикул товара"]}\n'
+                              f'<b>Количество, шт:</b> {quantity}\n'
+                              f'<b>Итоговая цена, ₽:</b> {end_price}\n').zayavka_buttons()
+
+                await state.set_state(Next_level_base.price)
+        else:
+            await bot.send_message(message.chat.id, 'Неверные данные... Повторите попытку, используя цифры (Например: 11)')
+            await state.set_state(Next_level_base.quantity)
+    except Exception as e:
+        logger.exception('Ошибка в FSM/count_price_step_two', e)
+        await bot.send_message(loggs_acc, f'Ошибка в FSM/count_price_step_two: {e}')

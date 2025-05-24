@@ -1,4 +1,7 @@
+import asyncio
 from datetime import datetime
+import aiohttp
+import xml.etree.ElementTree as ET
 from typing import Any
 
 from aiogram.types import Message
@@ -7,6 +10,8 @@ from loguru import logger
 from configs.passwords import loggs_acc
 from google_sheets import get_sheet_base, moscow_tz
 from redis_file import redis_storage
+
+CBR_URL = "https://www.cbr.ru/scripts/XML_daily.asp"
 
 
 class Clients:
@@ -85,3 +90,27 @@ async def is_today(date_str: str) -> bool:
 #
 # for i in asyncio.run(clients_base.get_clients()).values():
 #     print(asyncio.run(is_today(i["date"])))
+
+
+async def get_usd_cny_rate():
+    async with aiohttp.ClientSession() as session:
+        async with session.get(CBR_URL) as response:
+            xml_data = await response.text()
+            root = ET.fromstring(xml_data)
+
+            usd, cny = None, None
+            for valute in root.findall("Valute"):
+                char_code = valute.find("CharCode").text
+                value = float(valute.find("Value").text.replace(",", "."))
+                nominal = int(valute.find("Nominal").text)
+
+                if char_code == "USD":
+                    usd = round(value / nominal, 2)
+                elif char_code == "CNY":
+                    cny = round(value / nominal, 2)
+
+            return {"USD": usd, "CNY": cny}
+
+
+# rates = asyncio.run(get_usd_cny_rate())
+# print(f"Курс USD: {rates['USD']}₽, Курс CNY: {rates['CNY']}₽")

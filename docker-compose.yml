@@ -13,6 +13,7 @@ services:
     volumes:
       - ./configs/passwords.py:/app/configs/passwords.py
       - ./configs/pidor-of-the-day-5880592e7067.json:/app/configs/pidor-of-the-day-5880592e7067.json
+      - ./local_data/products.json:/app/local_data/products.json
       - ./loggs.log:/app/loggs.log
     restart: always
 
