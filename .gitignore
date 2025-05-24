@@ -1,14 +1,13 @@
 .venv
 loggs*
 errors*
-./configs/passwords.py
-./configs/pidor-of-the-day-5880592e7067.json
+configs/passwords.py
+configs/pidor-of-the-day-5880592e7067.json
 loggs.log
 tables/
-configs/
 __pycache__/
 *.py[cod]
 *$py.class
 .mypy_cache/
 .idea/
-local_data/
+local_data/products.json
