@@ -74,42 +74,46 @@ async def rassylka(message, bot, state: FSMContext):
 
 
 async def save_all_user_information(message, state: FSMContext, bot):
-    if str.isdigit(message.text) is True:
-        if message.text == '0':
-            await Buttons(bot, message, structure_menu["Основное меню"],
-                          menu_level="Вы прервали оформление заявки.\nПожалуйста выберите "
-                                     "интересующий пункт меню:").new_main_menu_buttons()
-            await state.clear()
+    try:
+        if str.isdigit(message.text) is True:
+            if message.text == '0':
+                await Buttons(bot, message, structure_menu["Основное меню"],
+                              menu_level="Вы прервали оформление заявки.\nПожалуйста выберите "
+                                         "интересующий пункт меню:").new_main_menu_buttons()
+                await state.clear()
+            else:
+                data = await state.get_data()
+                kategoriya = data.get('kategoriya')
+                brand = data.get('brand')
+                model = data.get('model')
+                quantity = message.text
+                await bot.send_message(chat_id=message.chat.id, text='<b>Заявка оформлена и передана администратору,</b> с Вами свяжутся в ближайшее время. '
+                                                 'Спасибо, что выбрали нас.🤝\n\n'
+                                                 'Для возвращения в главное меню воспользуйтесь командой /menu', parse_mode="html")
+                sheet_base = await get_sheet_base()
+                await sheet_base.record_in_base(bot, message, kategoriya, brand, model, quantity)
+                await state.clear()
+                await bot.send_message(group_id, f'🚨!!!СРОЧНО!!!🚨\n'
+                                                 f'<b>Поступила ЗАЯВКА от:</b>\n'
+                                                 f'Псевдоним: @{message.from_user.username}\n'
+                                                 f'id чата: {message.chat.id}\n\n'
+                                                 f'<b>Предмет интереса:</b>\n'
+                                                 f'категория: {kategoriya}\n'
+                                                 f'бренд: {brand}\n'
+                                                 f'модель: {model}\n'
+                                                 f'количество: {quantity}\n'
+                                                 f'Быстрее согласуйте дату и закройте заявку пока он не слился\n'
+                                                 f'/sent_message - отправить сообщение с помощью бота\n\n'
+                                                 f'<b>Дополнительная информация в гугл таблице: </b>https://docs.google.com/spread'
+                                                 f'sheets/d/1upFEYAoBg1yio5oC2KFX6WMb0FDBslw-NplIXHNzR9Y/edit?usp=sharing',
+                                       parse_mode='html')
+                await state.clear()
         else:
-            data = await state.get_data()
-            kategoriya = data.get('kategoriya')
-            brand = data.get('brand')
-            model = data.get('model')
-            quantity = message.text
-            await bot.send_message(chat_id=message.chat.id, text='<b>Заявка оформлена и передана администратору,</b> с Вами свяжутся в ближайшее время. '
-                                             'Спасибо, что выбрали нас.🤝\n\n'
-                                             'Для возвращения в главное меню воспользуйтесь командой /menu', parse_mode="html")
-            sheet_base = await get_sheet_base()
-            await sheet_base.record_in_base(bot, message, kategoriya, brand, model, quantity)
-            await state.clear()
-            await bot.send_message(group_id, f'🚨!!!СРОЧНО!!!🚨\n'
-                                             f'<b>Поступила ЗАЯВКА от:</b>\n'
-                                             f'Псевдоним: @{message.from_user.username}\n'
-                                             f'id чата: {message.chat.id}\n\n'
-                                             f'<b>Предмет интереса:</b>\n'
-                                             f'категория: {kategoriya}\n'
-                                             f'бренд: {brand}\n'
-                                             f'модель: {model}\n'
-                                             f'количество: {quantity}\n'
-                                             f'Быстрее согласуйте дату и закройте заявку пока он не слился\n'
-                                             f'/sent_message - отправить сообщение с помощью бота\n\n'
-                                             f'<b>Дополнительная информация в гугл таблице: </b>https://docs.google.com/spread'
-                                             f'sheets/d/1upFEYAoBg1yio5oC2KFX6WMb0FDBslw-NplIXHNzR9Y/edit?usp=sharing',
-                                   parse_mode='html')
-            await state.clear()
-    else:
-        await bot.send_message(message.chat.id, 'Неверные данные... Повторите попытку, используя цифры (Например: 11)')
-        await state.set_state(Next_level_base.quantity)
+            await bot.send_message(message.chat.id, 'Неверные данные... Повторите попытку, используя цифры (Например: 11)')
+            await state.set_state(Next_level_base.quantity)
+    except Exception as e:
+        logger.exception('Ошибка в FSM/save_all_user_information', e)
+        await bot.send_message(loggs_acc, f'Ошибка в FSM/save_all_user_information: {e}')
 
 #
 # async def next_level(message, bot, state: FSMContext):
