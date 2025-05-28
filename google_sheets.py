@@ -119,9 +119,10 @@ def data_updater():
             'https://docs.google.com/spreadsheets/d/1nYUr1-Zb_m9sBvJzUO4n8v-f5v9GYgCZQeqxaQg-2LY/edit?gid=1733893965#gid=1733893965', #CPU,GPU,SSD, MB
             'https://docs.google.com/spreadsheets/d/1It_UPBuqvJSdxQhV_yGRh_CeZTJblEta4dH4p-KQOUs/edit?gid=1677852760#gid=1677852760', #everycom
             'https://docs.google.com/spreadsheets/d/1IbLXLZteFidJ0jqW5Hq1b9Z0GTgyB-cYPou_4oV1_-4/edit?gid=1246518664#gid=1246518664', #Аудио кабели/ Переходники, Наушники
-            # 'https://docs.google.com/spreadsheets/d/1ZquUFSa6qpZ_SrEyfSvUPXxEjah0d8jwmhJ2Ic-oMmI/edit?gid=832962407#gid=832962407', #Зарядки с проводами
-            # 'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBAIqBBwzgSyw2zMSiso-c0js6lFI/edit?gid=0#gid=0', #сетевые фильтры
-            'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-U6C7U1R3lRJLsUX99FCVAsaax5E/edit?gid=0#gid=0' #наушники
+            'https://docs.google.com/spreadsheets/d/1ZquUFSa6qpZ_SrEyfSvUPXxEjah0d8jwmhJ2Ic-oMmI/edit?gid=832962407#gid=832962407', #Зарядки с проводами
+            'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBAIqBBwzgSyw2zMSiso-c0js6lFI/edit?gid=0#gid=0', #сетевые фильтры
+            'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-U6C7U1R3lRJLsUX99FCVAsaax5E/edit?gid=0#gid=0', #наушники
+            'https://docs.google.com/spreadsheets/d/1pyO8MjxutwF-lQUv6qC7uqlWijEZ0xGHTMOOEQ6RWMY/edit?gid=1623276324#gid=1623276324' #провода
 
         ]
 
@@ -158,7 +159,7 @@ async def find_product(query: str) -> Optional[list]:
             return product_list
         else:
             for key, value in products_db.items():
-                if query.upper() in key:
+                if query.upper() in key.upper():
                     product_list.append(value)
 
             return product_list if product_list else None
@@ -166,4 +167,4 @@ async def find_product(query: str) -> Optional[list]:
         logger.exception(f"find_product: {e}")
 
 
-# data_updater()
+data_updater()

@@ -105,7 +105,7 @@ class Buttons:  # класс для создания клавиатур разл
                     callback_button = f"{i['Артикул товара'].strip()}__{i['Модель'].strip()}"
                     button = types.InlineKeyboardButton(text=text_button, callback_data=callback_button)
                     keyboard_list.append([button])
-                kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list, resize_keyboard=True)
+                kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list)
                 try:
                     await self.bot.edit_message_text(text=f'{self.menu_level}', chat_id=self.message.chat.id,
                                                      message_id=self.message.message_id, parse_mode='html')
@@ -132,7 +132,7 @@ class Buttons:  # класс для создания клавиатур разл
                 if self.back_button is not None:
                     back_button = types.InlineKeyboardButton(text="⬅️ Назад", callback_data=self.back_button)
                     keyboard_list.append([back_button])
-                    kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list, resize_keyboard=True)
+                    kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list)
                     await self.bot.edit_message_text(text=f'{self.menu_level}', chat_id=self.message.chat.id,
                                                      message_id=self.message.message_id, parse_mode='html')
                     await asyncio.sleep(0.1)
@@ -141,10 +141,18 @@ class Buttons:  # класс для создания клавиатур разл
                                                              reply_markup=kb2)
 
                 else:
-                    kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list, resize_keyboard=True)
-                    await asyncio.sleep(0.3)
-                    await self.bot.send_message(text=f'{self.menu_level}', chat_id=self.message.chat.id, reply_markup=kb2,
-                                                parse_mode='html')
+                    kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list)
+                    try:
+                        await self.bot.edit_message_text(text=f'{self.menu_level}', chat_id=self.message.chat.id,
+                                                         message_id=self.message.message_id, parse_mode='html')
+                        await asyncio.sleep(0.1)
+                        await self.bot.edit_message_reply_markup(chat_id=self.message.chat.id,
+                                                                 message_id=self.message.message_id,
+                                                                 reply_markup=kb2)
+                    except TelegramBadRequest:
+                        await self.bot.send_message(text=f'{self.menu_level}', chat_id=self.message.chat.id,
+                                                    reply_markup=kb2,
+                                                    parse_mode='html')
         except Exception as e:
             logger.exception('Ошибка в keyboards/speed_find_of_product_buttons', e)
             await self.bot.send_message(loggs_acc, f'Ошибка в keyboards/speed_find_of_product_buttons: {e}')

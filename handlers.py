@@ -410,6 +410,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
 
 
 async def handler_user_message(message: Message, bot, state: FSMContext):
+    await state.clear()
     product_list = await find_product(message.text)
     if product_list is not None:
         await Buttons(bot, message, keys_dict=None).speed_find_of_product_buttons(product_list)
