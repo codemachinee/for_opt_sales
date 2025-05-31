@@ -103,6 +103,7 @@ class Buttons:  # класс для создания клавиатур разл
                 for i in product_list:
                     text_button = f"{i['Модель']} {i['Цвет']}"
                     callback_button = f"{i['Артикул товара'].strip()}__{i['Модель'].strip()}"
+                    # callback_button = f"{i['Артикул товара'].strip()}__{self.message.text}"
                     button = types.InlineKeyboardButton(text=text_button, callback_data=callback_button)
                     keyboard_list.append([button])
                 kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list)
@@ -128,7 +129,8 @@ class Buttons:  # класс для создания клавиатур разл
                 text_button = f"Рассчет итоговой стоимости"
                 callback_button = f"{product_list[0]['Артикул товара'].strip()}__{product_list[0]['Модель'].strip()}"
                 button = types.InlineKeyboardButton(text=text_button, callback_data=callback_button)
-                keyboard_list.append([button])
+                cancel_button = types.InlineKeyboardButton(text="❌ Отмена", callback_data="Основное меню")
+                keyboard_list = [[button], [cancel_button]]
                 if self.back_button is not None:
                     back_button = types.InlineKeyboardButton(text="⬅️ Назад", callback_data=self.back_button)
                     keyboard_list.append([back_button])

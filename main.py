@@ -16,7 +16,7 @@ from FSM import (
     message_from_admin_text,
     message_from_user,
     rassylka,
-    count_price_step_one, count_price_step_two
+    count_price_step_one, count_price_step_two, handler_user_message_info
 )
 from functions import clients_base
 from google_sheets import get_sheet_base
@@ -79,6 +79,7 @@ dp.callback_query.register(check_callbacks, Next_level_base.model)
 dp.callback_query.register(check_callbacks, Next_level_base.price)
 dp.callback_query.register(check_callbacks, F.data)
 
+dp.message.register(handler_user_message_info, Next_level_base.info)
 dp.message.register(handler_user_message, F.text, F.chat.type == 'private')
 
 

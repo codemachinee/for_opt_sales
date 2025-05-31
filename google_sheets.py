@@ -167,4 +167,4 @@ async def find_product(query: str) -> Optional[list]:
         logger.exception(f"find_product: {e}")
 
 
-data_updater()
+# data_updater()

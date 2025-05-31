@@ -401,7 +401,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                              'смотрите в каталогах доступных по кнопке <b>"📋 Каталоги товаров и цен"</b> в '
                                              'основном меню', chat_id=callback.message.chat.id,
                                         message_id=callback.message.message_id, parse_mode='html')
-            # await state.set_state(Next_level_base.quantity)
+            await state.set_state(Next_level_base.info)
 
     except Exception as e:
         logger.exception('Ошибка в handlers/check_callbacks', e)
@@ -416,6 +416,7 @@ async def handler_user_message(message: Message, bot, state: FSMContext):
         await Buttons(bot, message, keys_dict=None).speed_find_of_product_buttons(product_list)
         if len(product_list) == 1:
             await state.set_state(Next_level_base.info)
+
     else:
         assistant = await get_assistant_manager()
         answer = await assistant.get_response(message.text)

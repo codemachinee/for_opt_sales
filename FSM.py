@@ -129,6 +129,9 @@ async def count_price_step_one(callback, bot, state: FSMContext):
                 text='Пожалуйста введите количество товара числом (в случае отмены отправьте 0)',
                 chat_id=callback.message.chat.id, message_id=callback.message.message_id)
             await state.set_state(Next_level_base.quantity)
+        elif callback.data == "Основное меню":
+            await state.clear()
+            await Buttons(bot, callback.message, structure_menu["Основное меню"], menu_level= "Пожалуйста выберите интересующий пункт меню:").menu_buttons()
         else:
             await state.set_state(Next_level_base.model)
             await Buttons(bot, callback.message, keys_dict=None).speed_find_of_product_buttons(product_list)
@@ -176,3 +179,19 @@ async def count_price_step_two(message, state: FSMContext, bot):
     except Exception as e:
         logger.exception('Ошибка в FSM/count_price_step_two', e)
         await bot.send_message(loggs_acc, f'Ошибка в FSM/count_price_step_two: {e}')
+
+
+async def handler_user_message_info(message, bot, state: FSMContext):
+    product_list = await find_product(message.text)
+    if product_list is not None:
+        await Buttons(bot, message, keys_dict=None).speed_find_of_product_buttons(product_list)
+        if len(product_list) == 1:
+            await state.set_state(Next_level_base.info)
+    else:
+        await bot.edit_message_text(text='<b>Пожалуйста введите название</b> (для обозначения букв допускается только '
+                                         'латиница) <b>или артикул модели</b>\n\n(Пример: CA-67 (название), 6936985015064'
+                                         ' (артикул)).\n\n Название, артикул и полный перечень информации по товарам '
+                                         'смотрите в каталогах доступных по кнопке <b>"📋 Каталоги товаров и цен"</b> в '
+                                         'основном меню', chat_id=message.chat.id,
+                                    message_id=message.message_id, parse_mode='html')
+        await state.set_state(Next_level_base.info)
