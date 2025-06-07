@@ -1,11 +1,12 @@
 # Импортируем необходимые классы из aiogram
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from loguru import logger
 
 from configs.passwords import group_id, loggs_acc
 from functions import get_usd_cny_rate
-from google_sheets import get_sheet_base, find_product
+from google_sheets import find_product, get_sheet_base
 from keyboards import Buttons
 from structure import structure_menu
 
@@ -156,10 +157,10 @@ async def count_price_step_two(message, state: FSMContext, bot):
                 await state.set_state(Next_level_base.quantity)
 
             else:
-                mess = await bot.send_message(text=f'Считаем..🚀', chat_id=message.chat.id)
+                mess = await bot.send_message(text='Считаем..🚀', chat_id=message.chat.id)
                 usd_uan = await get_usd_cny_rate()
-                uan_rate = float(usd_uan['CNY']) + 1.5
-                usd_rate = float(usd_uan['USD']) + 6.6
+                uan_rate = float(usd_uan['CNY'])
+                usd_rate = float(usd_uan['USD'])
                 price_uan = float(data.get('info')[0]['Цена,￥'].replace(",", ".")) if data.get('info')[0]['Цена,￥'] else 0
                 quantity = int(message.text)
                 logistic_price_of_MOQ = float(data.get('info')[0]['Стоимость логистики за MOQ, $'].replace(",", ".")) if data.get('info')[0]['Стоимость логистики за MOQ, $'] else 0
@@ -182,16 +183,36 @@ async def count_price_step_two(message, state: FSMContext, bot):
 
 
 async def handler_user_message_info(message, bot, state: FSMContext):
-    product_list = await find_product(message.text)
-    if product_list is not None:
-        await Buttons(bot, message, keys_dict=None).speed_find_of_product_buttons(product_list)
-        if len(product_list) == 1:
-            await state.set_state(Next_level_base.info)
-    else:
-        await bot.edit_message_text(text='<b>Пожалуйста введите название</b> (для обозначения букв допускается только '
-                                         'латиница) <b>или артикул модели</b>\n\n(Пример: CA-67 (название), 6936985015064'
-                                         ' (артикул)).\n\n Название, артикул и полный перечень информации по товарам '
-                                         'смотрите в каталогах доступных по кнопке <b>"📋 Каталоги товаров и цен"</b> в '
-                                         'основном меню', chat_id=message.chat.id,
-                                    message_id=message.message_id, parse_mode='html')
-        await state.set_state(Next_level_base.info)
+    try:
+        product_list = await find_product(message.text)
+        if product_list is not None:
+            await Buttons(bot, message, keys_dict=None).speed_find_of_product_buttons(product_list)
+            if len(product_list) == 1:
+                await state.set_state(Next_level_base.info)
+        else:
+            try:
+                await bot.edit_message_text(
+                    text="<b>Пожалуйста введите название</b> (для обозначения букв допускается только "
+                    "латиница) <b>или артикул модели</b>\n\n(Пример: CA-67 (название), 6936985015064"
+                    " (артикул)).\n\n Название, артикул и полный перечень информации по товарам "
+                    'смотрите в каталогах доступных по кнопке <b>"📋 Каталоги товаров и цен"</b> в '
+                    "основном меню",
+                    chat_id=message.chat.id,
+                    message_id=message.message_id,
+                    parse_mode="html",
+                )
+                await state.set_state(Next_level_base.info)
+            except TelegramBadRequest:
+                await bot.send_message(chat_id=message.chat.id, text='<b>Пожалуйста введите название</b> '
+                                                                          '(для обозначения букв допускается только '
+                                                                          'латиница) <b>или артикул модели</b>\n\n'
+                                                                          '(Пример: CA-67 (название), 6936985015064'
+                                                                          ' (артикул)).\n\n Название, артикул и полный '
+                                                                          'перечень информации по товарам смотрите в '
+                                                                          'каталогах доступных по кнопке '
+                                                                          '<b>"📋 Каталоги товаров и цен"</b> в "основном '
+                                                                          'меню"', parse_mode="html")
+                await state.set_state(Next_level_base.info)
+    except Exception as e:
+        logger.exception('Ошибка в FSM/handler_user_message_info', e)
+        await bot.send_message(loggs_acc, f'Ошибка в FSM/handler_user_message_info: {e}')

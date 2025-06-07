@@ -1,9 +1,8 @@
-import asyncio
-from datetime import datetime
-import aiohttp
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from typing import Any
 
+import aiohttp
 from aiogram.types import Message
 from loguru import logger
 
@@ -105,9 +104,9 @@ async def get_usd_cny_rate():
                 nominal = int(valute.find("Nominal").text)
 
                 if char_code == "USD":
-                    usd = round(value / nominal, 2)
+                    usd = round(value / nominal, 2) + 6.4
                 elif char_code == "CNY":
-                    cny = round(value / nominal, 2)
+                    cny = round(value / nominal, 2) + 1.5
 
             return {"USD": usd, "CNY": cny}
 
