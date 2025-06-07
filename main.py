@@ -46,8 +46,8 @@ logger.add(
     diagnose=True       # Подробный вывод
 )
 
-# token = iamgroot
-token = codemashine_test
+token = iamgroot
+# token = codemashine_test
 
 bot = Bot(token=token)
 dp = Dispatcher()
