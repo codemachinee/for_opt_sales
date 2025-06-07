@@ -161,7 +161,7 @@ async def count_price_step_two(message, state: FSMContext, bot):
                 usd_uan = await get_usd_cny_rate()
                 uan_rate = float(usd_uan['CNY'])
                 usd_rate = float(usd_uan['USD'])
-                price_uan = float(data.get('info')[0]['Цена,￥'].replace(",", ".")) if data.get('info')[0]['Цена,￥'] else 0
+                price_uan = float(data.get('info')[0]['Столбец 1'].replace(",", ".")) if data.get('info')[0]['Столбец 1'] else 0
                 quantity = int(message.text)
                 logistic_price_of_MOQ = float(data.get('info')[0]['Стоимость логистики за MOQ, $'].replace(",", ".")) if data.get('info')[0]['Стоимость логистики за MOQ, $'] else 0
                 end_price = ((price_uan * uan_rate * quantity) + (usd_rate * logistic_price_of_MOQ)*1.2)
