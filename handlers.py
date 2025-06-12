@@ -183,47 +183,53 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
     try:
         if callback.data == "📋 Каталоги товаров и цен":
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог сетевых фильтров: </b>'
-                                                             'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                                                             'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing',
+                                                             'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_'
+                                                             '08MBAIqBBwzgSyw2zMSiso-c0js6lFI/edit?gid=0#gid=0',
                                    parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог OTG/Хабы/кардридеры: </b>'
-                                   'https://docs.google.com/spreadsheets/d/1s2dyd9fHWVtBJLGWO4JT2AUskRXvUaFwFFrh1ikp8i0'
-                                   '/edit?usp=sharing', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1s2dyd9fHWVtBJLGWO4JT2AUskRXvUaFwFFrh1ikp8i'
+                                   '0/edit?gid=121557587#gid=121557587', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог беспроводных наушников: </b>'
-                                                             'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-'
-                                                             'U6C7U1R3lRJLsUX99FCVAsaax5E/edit?usp=sharing',
-                                   parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1lc1tBWMCSOGKwdM-U6C7U1R3lRJLsUX99FCVAsaa'
+                                   'x5E/edit?gid=0#gid=0', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог держателей/подставок устройств: </b>'
-                                                             'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3N'
-                                                             'aHut3TUY6COqvzCgYb2AEMV1Cx6Zc/edit?usp=sharing',
-                                   parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1p4xQXqozQugy3NaHut3TUY6COqvzCgYb2AEMV1Cx6'
+                                   'Zc/edit?gid=1677852760#gid=1677852760', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог Powerbanks/станции питания(BAVIN):</b> '
-                                   'https://docs.google.com/spreadsheets/d/1xfIx2SMaWnR88xPWY2tZ0fzLVTes2D8HMWxZBtbXGFs'
-                                   '/edit?usp=sharing', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1xfIx2SMaWnR88xPWY2tZ0fzLVTes2D8HMWxZBtbXG'
+                                   'Fs/edit?gid=1007442373#gid=1007442373', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог зарядок в авто(BAVIN):</b> '
-                                        'https://docs.google.com/spreadsheets/d/1_IxmDysMNlruynERjTqcfKrLdSPS9Va3WlzLL'
-                                        'B92g_M/edit?usp=sharing', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1_IxmDysMNlruynERjTqcfKrLdSPS9Va3WlzLLB92g_'
+                                   'M/edit?gid=818698707#gid=818698707', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Беспроводные зарядки(BAVIN):</b> '
-                                   'https://docs.google.com/spreadsheets/d/1HISN8oq8UawoT721ckVDYYTIJCoA0p0VtZ8wYXB25P'
-                                   'o/edit?usp=sharing', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1HISN8oq8UawoT721ckVDYYTIJCoA0p0VtZ8wYXB2'
+                                   '5Po/edit?gid=1733893965#gid=1733893965', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Аудио аксессуары(BAVIN):</b> '
                                    'https://docs.google.com/spreadsheets/d/1IbLXLZteFidJ0jqW5Hq1b9Z0GTgyB-cYPou_4oV1_'
                                    '-4/edit?gid=1246518664#gid=1246518664', parse_mode='html')
             await asyncio.sleep(0.2)
             await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог блоков зарядки(BAVIN):</b> '
-                                   'https://docs.google.com/spreadsheets/d/1d4EHBeFg-SVMvkc12dnQTNd_vYjsi-Vb/edit?usp='
-                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+                                   'https://docs.google.com/spreadsheets/d/1ZquUFSa6qpZ_SrEyfSvUPXxEjah0d8jwmhJ2Ic-'
+                                   'oMmI/edit?gid=832962407#gid=832962407', parse_mode='html')
             await asyncio.sleep(0.2)
-            await bot.send_message(chat_id=callback.message.chat.id, text='<b>Каталог серверных комплектующих:</b> '
-                                   'https://docs.google.com/spreadsheets/d/1XJlkP2ro0EXX3ZudN__Z5Y4e5G2HLhsu/edit?usp='
-                                   'sharing&ouid=117298760559545275811&rtpof=true&sd=true', parse_mode='html')
+            await bot.send_message(chat_id=callback.message.chat.id, text="<b>Каталог серверных комплектующих:</b> "
+                                   "https://docs.google.com/spreadsheets/d/1nYUr1-Zb_m9sBvJzUO4n8v-f5v9GYgCZQeqxaQg-2LY"
+                                   "/edit?gid=1733893965#gid=1733893965", parse_mode="html")
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text="<b>Каталог проекторов:</b> "
+                "https://docs.google.com/spreadsheets/d/1It_UPBuqvJSdxQhV_yGRh_CeZTJblEta4dH4p-KQOUs/edit?gid=16778"
+                                                                          "52760#gid=1677852760", parse_mode="html")
+            await asyncio.sleep(0.2)
+            await bot.send_message(chat_id=callback.message.chat.id, text="<b>Каталог кабелей:</b> "
+                                   "https://docs.google.com/spreadsheets/d/1pyO8MjxutwF-lQUv6qC7uqlWijEZ0xGHTMOOEQ6RW"
+                                   "MY/edit?gid=1623276324#gid=1623276324", parse_mode="html")
 
         elif callback.data == "🚚 Вопросы по логистике":
             await Buttons(bot, callback.message, {},"Основное меню", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
