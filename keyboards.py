@@ -129,8 +129,7 @@ class Buttons:  # класс для создания клавиатур разл
                 text_button = f"Рассчет итоговой стоимости"
                 callback_button = f"{product_list[0]['Артикул товара'].strip()}__{product_list[0]['Модель'].strip()}"
                 button = types.InlineKeyboardButton(text=text_button, callback_data=callback_button)
-                cancel_button = types.InlineKeyboardButton(text="❌ Отмена", callback_data="Основное меню")
-                keyboard_list = [[button], [cancel_button]]
+                keyboard_list.append([button])
                 if self.back_button is not None:
                     back_button = types.InlineKeyboardButton(text="⬅️ Назад", callback_data=self.back_button)
                     keyboard_list.append([back_button])
@@ -143,6 +142,8 @@ class Buttons:  # класс для создания клавиатур разл
                                                              reply_markup=kb2)
 
                 else:
+                    cancel_button = types.InlineKeyboardButton(text="❌ Отмена", callback_data="Основное меню")
+                    keyboard_list.append([cancel_button])
                     kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list)
                     try:
                         await self.bot.edit_message_text(text=f'{self.menu_level}', chat_id=self.message.chat.id,

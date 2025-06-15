@@ -316,10 +316,10 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
             split_list = callback.data.split('__')
             if split_list[1].startswith("💰 "):
                 if split_list[1] == "💰 Каталог(Проекторы)":
-                    await Buttons(bot, callback.message, {}, "Проекторы", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
-                    # await bot.send_message(callback.message.chat.id, 'Каталог проекторов: '
-                    #                                              'https://docs.google.com/spreadsheets/d/1bd_lMkz7JqT_08MBA'
-                    #                                              'IqBBwzgSyw2zMSiso-c0js6lFI/edit?usp=sharing')
+                    # await Buttons(bot, callback.message, {}, "Проекторы", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
+                    await bot.send_message(callback.message.chat.id, 'Каталог проекторов: https://docs.google.com/'
+                                                                     'spreadsheets/d/1It_UPBuqvJSdxQhV_yGRh_CeZTJblEta'
+                                                                     '4dH4p-KQOUs/edit?gid=1677852760#gid=1677852760')
                 elif split_list[1] == "💰 Каталог(Сканеры)":
                     await Buttons(bot, callback.message, {}, "Barcode сканеры", menu_level="⚙️ Фрагмент в разработке").menu_buttons()
                     # await bot.send_message(callback.message.chat.id, 'Каталог сканеров: '
@@ -396,7 +396,11 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                        'XB25Po/edit?usp=sharing')
         elif await find_product(callback.data) is not None:
             product_list = await find_product(callback.data)
-            await Buttons(bot, callback.message, keys_dict=None).speed_find_of_product_buttons(product_list)
+            data = await state.get_data()
+            if data.get('brand'):
+                await Buttons(bot, callback.message, keys_dict=None, back_button=f"{data.get('kategoriya')}__{data.get('brand')}").speed_find_of_product_buttons(product_list)
+            else:
+                await Buttons(bot, callback.message, keys_dict=None).speed_find_of_product_buttons(product_list)
             if len(product_list) == 1:
                 await state.set_state(Next_level_base.info)
         else:

@@ -125,11 +125,21 @@ async def count_price_step_one(callback, bot, state: FSMContext):
     try:
         product_list = await find_product(callback.data)
         if '__' in callback.data:
-            await state.update_data(info=product_list)
-            await bot.edit_message_text(
-                text='Пожалуйста введите количество товара числом (в случае отмены отправьте 0)',
-                chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-            await state.set_state(Next_level_base.quantity)
+            split_list = callback.data.split('__')
+            data = await state.get_data()
+            if split_list[0] == data.get("kategoriya"):
+                await Buttons(bot, callback.message,
+                              structure_menu["Основное меню"]["📦 Закупка оптом"][f'{split_list[0]}'][f'{split_list[1]}'],
+                              back_button=f'{split_list[0]}',
+                              menu_level="Пожалуйста выберите модель/серию:").menu_buttons()
+
+                await state.set_state(Next_level_base.model)
+            else:
+                await state.update_data(info=product_list)
+                await bot.edit_message_text(
+                    text='Пожалуйста введите количество товара числом (в случае отмены отправьте 0)',
+                    chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+                await state.set_state(Next_level_base.quantity)
         elif callback.data == "Основное меню":
             await state.clear()
             await Buttons(bot, callback.message, structure_menu["Основное меню"], menu_level= "Пожалуйста выберите интересующий пункт меню:").menu_buttons()
