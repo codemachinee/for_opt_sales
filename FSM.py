@@ -145,7 +145,13 @@ async def count_price_step_one(callback, bot, state: FSMContext):
             await Buttons(bot, callback.message, structure_menu["Основное меню"], menu_level= "Пожалуйста выберите интересующий пункт меню:").menu_buttons()
         else:
             await state.set_state(Next_level_base.model)
-            await Buttons(bot, callback.message, keys_dict=None).speed_find_of_product_buttons(product_list)
+            data = await state.get_data()
+            if data.get('brand'):
+                await Buttons(bot, callback.message, keys_dict=None,
+                              back_button=f"{data.get('kategoriya')}__{data.get('brand')}").speed_find_of_product_buttons(
+                    product_list)
+            else:
+                await Buttons(bot, callback.message, keys_dict=None).speed_find_of_product_buttons(product_list)
     except Exception as e:
         logger.exception('Ошибка в FSM/count_price_step_one', e)
         await bot.send_message(loggs_acc, f'Ошибка в FSM/count_price_step_one: {e}')

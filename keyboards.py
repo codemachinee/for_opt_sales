@@ -106,6 +106,9 @@ class Buttons:  # класс для создания клавиатур разл
                     # callback_button = f"{i['Артикул товара'].strip()}__{self.message.text}"
                     button = types.InlineKeyboardButton(text=text_button, callback_data=callback_button)
                     keyboard_list.append([button])
+                if self.back_button is not None:
+                    back_button = types.InlineKeyboardButton(text="⬅️ Назад", callback_data=self.back_button)
+                    keyboard_list.append([back_button])
                 kb2 = types.InlineKeyboardMarkup(inline_keyboard=keyboard_list)
                 try:
                     await self.bot.edit_message_text(text=f'{self.menu_level}', chat_id=self.message.chat.id,
