@@ -101,7 +101,7 @@ async def main():
         await clients_base.load_base(await sheet_base.get_clients(bot))
         assistant = await get_assistant_manager()
         await assistant.initialize()
-        await dp.start_polling(bot)
+        await dp.start_polling(bot, polling_timeout=20)
     except Exception as e:
         logger.exception(f'Ошибка в боте: {e}')
     finally:
