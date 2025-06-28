@@ -104,11 +104,9 @@ structure_menu = {
                     "PC825",
                     "PC823Y-EU",
                     "PC830Y",
-                    "PC830E",
                     "PC833Y",
                     "PC2026",
                     "PC2026Y",
-                    "PC2026E",
                     "PC2080",
                     "PC2081",
                     "PC2082"
@@ -117,42 +115,40 @@ structure_menu = {
             },
             "GPU (графические процессоры)": {
                 "Nvidia": [
-                    "A4000",
-                    "A6000E",
-                    "RTX6000 ADA",
-                    "H100 80G",
-                    "H100 NVL 94G",
-                    "H200 NVL 141G"
+                    "A4000 GPU",
+                    "A6000E GPU",
+                    "RTX6000ADA GPU",
+                    "H100-80G GPU",
+                    "H200 NVL-141G GPU",
+                    "Palit RTX 5090 GAMEROCK 32GB GDDR7 512bit"
                 ]
             },
             "Материнские платы": {
-                "Supermicro motherboard": [
-                    "X10 DAI",
-                    "X11SSL-F",
-                    "X11SPL-F",
-                    "X11SSM-F",
-                    "X11DPI-N",
-                ]
+                "X10 DAI Supermicro motherboard",
+                "X11SSL-F Supermicro motherboard",
+                "X11SPL-F Supermicro motherboard",
+                "X11SSM-F Supermicro motherboard",
+                "X11DPI-N Supermicro motherboard"
             },
             "CPU (центральные процессоры)": {
                 "AMD": [
-                    "AMD 7713"
+                    "AMD 7713 CPU"
                 ]
             },
             "HDD (жесткие диски)": {
                 "Seagate HDD": [
-                    "ST8000NM017B",
-                    "ST10000NM017B",
-                    "ST10000NM018B",
-                    "ST16000NM000J",
-                    "ST16000NM004J",
-                    "ST18000NM000J",
-                    "ST18000NM004J",
-                    "ST20000NM007D",
-                    "ST20000NM002H",
-                    "ST600MM0009",
-                    "ST1800MM0129",
-                    "ST2400MM0129"
+                    "ST8000NM017B Seagate HDD",
+                    "ST10000NM017B Seagate HDD",
+                    "ST10000NM018B Seagate HDD",
+                    "ST16000NM000J Seagate HDD",
+                    "ST16000NM004J Seagate HDD",
+                    "ST18000NM000J Seagate HDD",
+                    "ST18000NM004J Seagate HDD",
+                    "ST20000NM007D Seagate HDD",
+                    "ST20000NM002H Seagate HDD",
+                    "ST600MM0009 Seagate HDD",
+                    "ST1800MM0129 Seagate HDD",
+                    "ST2400MM0129 Seagate HDD"
                 ]
             },
             "Беспроводные наушники": {
