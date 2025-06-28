@@ -124,11 +124,13 @@ structure_menu = {
                 ]
             },
             "Материнские платы": {
+                "Supermicro motherboard": [
                 "X10 DAI Supermicro motherboard",
                 "X11SSL-F Supermicro motherboard",
                 "X11SPL-F Supermicro motherboard",
                 "X11SSM-F Supermicro motherboard",
                 "X11DPI-N Supermicro motherboard"
+                ]
             },
             "CPU (центральные процессоры)": {
                 "AMD": [
