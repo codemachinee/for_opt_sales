@@ -248,7 +248,7 @@ async def check_callbacks(callback: CallbackQuery, bot, state: FSMContext):
                                         'Спасибо, что выбрали нас.🤝\n'
                                         'Для возвращения меню: /menu', message_id=callback.message.message_id)
 
-            await bot.send_message(chay_id=group_id, text=f'🚨!!!СРОЧНО!!!🚨\n'
+            await bot.send_message(chat_id=group_id, text=f'🚨!!!СРОЧНО!!!🚨\n'
                                             f'<b>поступил запрос на ЧАТ С АДМИНИСТРАТОРОМ от:</b>\n'
                                             f'Ссылка: @{callback.from_user.username}\n'
                                             f'id чата: {callback.message.chat.id}\n'

@@ -105,9 +105,9 @@ async def main():
     except Exception as e:
         logger.exception(f'Ошибка в боте: {e}')
     finally:
-        assistant = await get_assistant_manager()
+        # assistant = await get_assistant_manager()
         await redis_storage.close()
-        await assistant.cleanup()
+        # await assistant.cleanup()
         await bot.send_message(loggs_acc, 'выключение бота')
 
 

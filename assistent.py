@@ -1,6 +1,8 @@
 import pathlib
 from datetime import datetime, timedelta
 
+from grpc.aio import AioRpcError
+from grpc.beta.interfaces import StatusCode
 from loguru import logger
 from yandex_cloud_ml_sdk import YCloudML
 from yandex_cloud_ml_sdk.search_indexes import VectorSearchIndexType
@@ -89,9 +91,15 @@ class AssistantManager:
 
     async def cleanup(self):
         logger.info("Очистка старых сущностей...")
-        if self.thread:
-            self.thread.delete()
-            self.thread = None
+        if self.thread is not None:
+            try:
+                self.thread.delete()
+                self.thread = None
+            except AioRpcError as e:
+                if e.code == StatusCode.NOT_FOUND:
+                    logger.info('thread уже удален или не найден, пропускаем очистку')
+                else:
+                    raise
         if self.assistant:
             self.assistant.delete()
             self.assistant = None
